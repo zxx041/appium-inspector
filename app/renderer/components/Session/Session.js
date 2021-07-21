@@ -20,7 +20,7 @@ const ADD_CLOUD_PROVIDER = 'addCloudProvider';
 export default class Session extends Component {
 
   componentDidMount () {
-    const {setLocalServerParams, getSavedSessions, setSavedServerParams, setVisibleProviders,
+    const {setLocalServerParams, getSavedSessions, setSavedServerParams,
            getRunningSessions, bindWindowClose, initFromQueryString} = this.props;
     (async () => {
       try {
@@ -28,7 +28,6 @@ export default class Session extends Component {
         await getSavedSessions();
         await setSavedServerParams();
         await setLocalServerParams();
-        await setVisibleProviders();
         getRunningSessions();
         await initFromQueryString();
       } catch (e) {
@@ -78,8 +77,7 @@ export default class Session extends Component {
                   return <TabPane key={providerName} tab={<div>{provider.tabhead()}</div>}>
                     {provider.tab(this.props)}
                   </TabPane>;
-                }),
-                <TabPane tab={<span className='addCloudProviderTab'>{ t('Select Cloud Providers') }</span>} key={ADD_CLOUD_PROVIDER}></TabPane>
+                })
               ]}
             </Tabs>
             <AdvancedServerParams {...this.props} />

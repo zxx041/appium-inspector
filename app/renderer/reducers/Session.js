@@ -13,7 +13,7 @@ import { NEW_SESSION_REQUESTED, NEW_SESSION_BEGAN, NEW_SESSION_DONE,
          IS_ADDING_CLOUD_PROVIDER, SET_PROVIDERS, SET_ADD_VENDOR_PREFIXES, SET_STATE_FROM_URL,
          ServerTypes } from '../actions/Session';
 
-const visibleProviders = []; // Pull this from "electron-settings"
+const visibleProviders = [ServerTypes.headspin];
 const server = {
   local: {},
   remote: {},
@@ -28,7 +28,7 @@ for (const serverName of _.keys(ServerTypes)) {
 const INITIAL_STATE = {
   savedSessions: [],
   tabKey: 'new',
-  serverType: ServerTypes.remote,
+  serverType: ServerTypes.headspin,
   visibleProviders,
   server: {
     local: {},
