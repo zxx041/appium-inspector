@@ -1,11 +1,12 @@
 {
-  "name": "appium-inspector",
+  "private": true,
   "version": "2021.8.5",
   "description": "An app inspector for use with an Appium server",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/appium/appium-inspector.git"
   },
+  "entry": "main.js",
   "author": {
     "name": "Appium Developers",
     "url": "https://github.com/appium"
@@ -19,7 +20,7 @@
   ],
   "assetsPath": "assets",
   "homepage": "https://github.com/appium/appium-inspector",
-  "main": "dist/main.js",
+  "main": "main.js",
   "scripts": {
     "test": "run-s test:*",
     "test:lint": "eslint app test",
@@ -29,6 +30,7 @@
     "build:main": "parcel build --target node --public-url . --out-dir ./dist --out-file main.js ./app/main.js",
     "build:renderer": "parcel build --no-content-hash --out-dir ./dist --target electron --public-url . ./app/renderer/*.html",
     "build:browser": "parcel build --no-content-hash --no-minify --out-dir ./dist-browser --target browser --public-url . ./app/renderer/index.html",
+    "build:browser:package": "parcel build --no-content-hash --no-minify --out-dir ./web-inspector/dist --target browser --public-url . ./app/renderer/index.html",
     "watch:main": "parcel watch --target node --public-url . --out-dir ./dist --out-file main.js ./app/main.js",
     "watch:renderer": "parcel watch --out-dir ./dist --target electron --public-url . ./app/renderer/*.html",
     "watch:browser": "BUILD_BROWSER=1 NODE_ENV=development parcel serve --target browser ./app/renderer/index.html",
@@ -37,7 +39,7 @@
     "build:prod:browser": "cross-env BUILD_BROWSER=1 NODE_ENV=production npm run build:browser",
     "build:dev:main": "cross-env NODE_ENV=development npm run build:main",
     "build:dev:renderer": "cross-env NODE_ENV=development npm run build:renderer",
-    "start": "cross-env RUNNING_LOCALLY=true electron ./",
+    "start": "cross-env RUNNING_LOCALLY=true electron ./dist/main.js",
     "start:dev": "cross-env RUNNING_LOCALLY=true FORCE_NO_WRONG_FOLDER=true NODE_ENV=development electron --inspect ./",
     "dev": "run-s build:dev:* && cross-env NODE_ENV=development concurrently --kill-others npm:start:dev npm:watch:main npm:watch:renderer",
     "clean": "run-s clean:*",

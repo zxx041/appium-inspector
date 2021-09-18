@@ -1,0 +1,38 @@
+{
+  "name": "appium-inspector",
+  "version": "0.0.0",
+  "description": "An app inspector for use with an Appium server",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/appium/appium-inspector.git"
+  },
+  "entry": "main.js",
+  "author": {
+    "name": "Appium Developers",
+    "url": "https://github.com/appium"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/appium/appium-inspector/issues"
+  },
+  "keywords": [
+    "appium"
+  ],
+  "assetsPath": "assets",
+  "homepage": "https://github.com/appium/appium-inspector",
+  "main": "main.js",
+  "scripts": {},
+  "dependencies": {
+    "chromium": "^3.0.2",
+    "teen_process": "^1.16.0"
+  },
+  "devDependencies": {},
+  "devEngines": {
+    "node": ">=6.x",
+    "npm": ">=3.x"
+  },
+  "engines": {
+    "node": ">=10.x",
+    "npm": ">=5.x"
+  }
+}
