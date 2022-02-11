@@ -3,13 +3,14 @@ import { getSetting, setSetting, SAVED_SESSIONS, SERVER_ARGS, SESSION_SERVER_TYP
 import { v4 as UUID } from 'uuid';
 import { push } from 'connected-react-router';
 import { notification } from 'antd';
-import { includes, debounce, toPairs, union, without, keys, isUndefined } from 'lodash';
+import { includes, debounce, toPairs, union, without, keys, isUndefined, isPlainObject } from 'lodash';
 import { setSessionDetails, quitSession } from './Inspector';
 import i18n from '../../configs/i18next.config.renderer';
 import CloudProviders from '../components/Session/CloudProviders';
 import { Web2Driver } from 'web2driver';
 import { addVendorPrefixes } from '../util';
 import ky from 'ky/umd';
+import moment from 'moment';
 
 export const NEW_SESSION_REQUESTED = 'NEW_SESSION_REQUESTED';
 export const NEW_SESSION_BEGAN = 'NEW_SESSION_BEGAN';
@@ -73,6 +74,9 @@ const AUTO_START_URL_PARAM = '1'; // what should be passed in to ?autoStart= to 
 // TODO: increase this retry when we get issues
 export const CONN_RETRIES = 0;
 
+// 1 hour default newCommandTimeout
+const NEW_COMMAND_TIMEOUT_SEC = 3600;
+
 let isFirstRun = true; // we only want to auto start a session on a first run
 
 const serverTypes = {};
@@ -87,6 +91,8 @@ export const ServerTypes = serverTypes;
 export const DEFAULT_SERVER_PATH = '/';
 export const DEFAULT_SERVER_HOST = '127.0.0.1';
 export const DEFAULT_SERVER_PORT = 4723;
+
+const SAUCE_OPTIONS_CAP = 'sauce:options';
 
 const JSON_TYPES = ['object', 'number', 'boolean'];
 
@@ -247,6 +253,13 @@ export function newSession (caps, attachSessId = null) {
           return;
         }
         https = false;
+        if (!isPlainObject(desiredCapabilities[SAUCE_OPTIONS_CAP])) {
+          desiredCapabilities[SAUCE_OPTIONS_CAP] = {};
+        }
+        if (!desiredCapabilities[SAUCE_OPTIONS_CAP].name) {
+          const dateTime = moment().format('lll');
+          desiredCapabilities[SAUCE_OPTIONS_CAP].name = `Appium Desktop Session -- ${dateTime}`;
+        }
         break;
       case ServerTypes.headspin: {
         let headspinUrl;
@@ -388,8 +401,8 @@ export function newSession (caps, attachSessId = null) {
 
         host = session.server.experitest.hostname = experitestUrl.hostname;
         path = session.server.experitest.path = '/wd/hub';
-        port = session.server.experitest.port = experitestUrl.port;
         https = session.server.experitest.ssl = experitestUrl.protocol === 'https:';
+        port = session.server.experitest.port = experitestUrl.port === '' ? (https ? 443 : 80) : experitestUrl.port;
         break;
       } case ServerTypes.roboticmobi: {
         host = 'api.robotic.mobi';
@@ -435,9 +448,11 @@ export function newSession (caps, attachSessId = null) {
       serverOpts.key = accessKey;
     }
 
-    // If a newCommandTimeout wasn't provided, set it to 0 so that sessions don't close on users
+    // If a newCommandTimeout wasn't provided, set it to 60 * 60 so that sessions don't close on users in short term.
+    // I saw sometimes infinit session timeout was not so good for cloud providers.
+    // So, let me define this value as NEW_COMMAND_TIMEOUT_SEC by default.
     if (isUndefined(desiredCapabilities[CAPS_NEW_COMMAND])) {
-      desiredCapabilities[CAPS_NEW_COMMAND] = 0;
+      desiredCapabilities[CAPS_NEW_COMMAND] = NEW_COMMAND_TIMEOUT_SEC;
     }
 
     // If someone didn't specify connectHardwareKeyboard, set it to true by
