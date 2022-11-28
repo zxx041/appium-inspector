@@ -8,6 +8,7 @@ const IMPORTANT_ATTRS = [
   'name',
   'content-desc',
   'resource-id',
+  'view-tag',
   'AXDescription',
   'AXIdentifier',
 ];
