@@ -37,6 +37,7 @@ const UNIQUE_PREDICATE_ATTRIBUTES = ['name', 'label', 'value', 'type'];
  * @returns {Object}
  */
 export function xmlToJSON(source) {
+  let recursiveCount = 0;
   const childNodesOf = (xmlNode) => {
     if (!xmlNode || !xmlNode.hasChildNodes()) {
       return [];
@@ -52,6 +53,7 @@ export function xmlToJSON(source) {
     return result;
   };
   const translateRecursively = (xmlNode, parentPath = '', index = null) => {
+    recursiveCount += 1;
     const attributes = {};
     for (let attrIdx = 0; attrIdx < xmlNode.attributes.length; ++attrIdx) {
       const attr = xmlNode.attributes.item(attrIdx);
@@ -86,7 +88,15 @@ export function xmlToJSON(source) {
   // documentElement
   const firstChild = childNodesOf(xmlDoc)[0] || childNodesOf(xmlDoc.documentElement)[0];
 
-  return firstChild ? translateRecursively(firstChild) : {};
+  const startAt = new Date();
+  console.log(`=======> translateRecursively`);
+  try {
+    return firstChild ? translateRecursively(firstChild) : {};
+  } finally {
+    const endAt = new Date();
+    //     done: 3660. duration 70505 ms
+    console.log(`=======> done: ${recursiveCount}. duration ${endAt - startAt} ms`);
+  }
 }
 
 /**
@@ -233,7 +243,7 @@ export function getOptimalXPath(doc, domNode) {
 
     // Go through each of our cases and look for selectors for each case in order
     for (const attrs of cases) {
-      const [xpath, isFullyUnique] = getUniqueXPath(doc, domNode, attrs);
+      const [xpath, isFullyUnique] = [];
       if (isFullyUnique) {
         // if we ever encounter an actually unique selector, return it straightaway
         return xpath;
