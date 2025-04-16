@@ -13,6 +13,7 @@ const ServerTabCustom = ({server, setServerParam, t}) => (
             placeholder={DEFAULT_SERVER_HOST}
             addonBefore={t('Remote Host')}
             value={server.remote.hostname}
+            disabled
             onChange={(e) => setServerParam('hostname', e.target.value)}
           />
         </Form.Item>
@@ -24,6 +25,7 @@ const ServerTabCustom = ({server, setServerParam, t}) => (
             placeholder={DEFAULT_SERVER_PORT}
             addonBefore={t('Remote Port')}
             value={server.remote.port}
+            disabled
             onChange={(e) => setServerParam('port', e.target.value)}
           />
         </Form.Item>
@@ -35,6 +37,7 @@ const ServerTabCustom = ({server, setServerParam, t}) => (
             placeholder={DEFAULT_SERVER_PATH}
             addonBefore={t('Remote Path')}
             value={server.remote.path}
+            disabled
             onChange={(e) => setServerParam('path', e.target.value)}
           />
         </Form.Item>
@@ -46,6 +49,7 @@ const ServerTabCustom = ({server, setServerParam, t}) => (
             checked={!!server.remote.ssl}
             value={server.remote.ssl}
             onChange={(e) => setServerParam('ssl', e.target.checked)}
+            disabled
           >
             {t('SSL')}
           </Checkbox>

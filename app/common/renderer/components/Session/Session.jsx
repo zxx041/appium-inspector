@@ -72,19 +72,48 @@ const Session = (props) => {
       bindWindowClose,
       initFromQueryString,
       saveFile,
+      setLocalServerParams1,
     } = props;
+
+    const handleMessage = (event) => {
+      // 确保消息来源是可信的
+      // if (event.origin === window.location.origin) {
+      // }
+      const {sessionId, hostname, port} = event.data;
+
+      // 设置 主机名 和 端口
+      if(hostname && port) {
+        console.log("msg from outer html", "hostname:", hostname, "port:", port);
+        setLocalServerParams1(hostname, port);
+      }
+
+      // getRunningSessions();
+     
+      if(sessionId) {
+        console.log("msg from outer html, sessionId:", sessionId);
+        loadNewSession(null, sessionId);
+      }
+      
+     };
+
+    // 监听 父页面送来的 message 事件
+    window.addEventListener('message', handleMessage);
+
     (async () => {
       try {
-        bindWindowClose();
-        switchTabs(SESSION_BUILDER_TABS.CAPS_BUILDER);
-        await getSavedSessions();
-        await setVisibleProviders();
+        // bindWindowClose();
+        // switchTabs(SESSION_BUILDER_TABS.CAPS_BUILDER);
+        // await getSavedSessions();
+        // await setVisibleProviders();
         await setSavedServerParams();
         await setLocalServerParams();
-        initFromQueryString(loadNewSession);
-        await setStateFromAppiumFile();
-        ipcRenderer.on('open-file', (_, filePath) => setStateFromAppiumFile(filePath));
-        ipcRenderer.on('save-file', (_, filePath) => saveFile(filePath));
+        // initFromQueryString(loadNewSession);
+        // await setStateFromAppiumFile();
+        // ipcRenderer.on('open-file', (_, filePath) => setStateFromAppiumFile(filePath));
+        // ipcRenderer.on('save-file', (_, filePath) => saveFile(filePath));
+
+        switchTabs(SESSION_BUILDER_TABS.ATTACH_TO_SESSION);
+        
       } catch (e) {
         log.error(e);
       }
@@ -105,24 +134,24 @@ const Session = (props) => {
                 key: SERVER_TYPES.REMOTE,
                 children: <ServerTabCustom {...props} />,
               },
-              ..._(visibleProviders).map((providerName) => {
-                const provider = CloudProviders[providerName];
-                if (!provider) {
-                  return true;
-                }
-                return {
-                  label: <div>{provider.tabhead()}</div>,
-                  key: providerName,
-                  children: provider.tab(props),
-                };
-              }),
-              {
-                label: <span className="addCloudProviderTab">{t('Select Cloud Providers')}</span>,
-                key: ADD_CLOUD_PROVIDER_TAB_KEY,
-              },
+              // ..._(visibleProviders).map((providerName) => {
+              //   const provider = CloudProviders[providerName];
+              //   if (!provider) {
+              //     return true;
+              //   }
+              //   return {
+              //     label: <div>{provider.tabhead()}</div>,
+              //     key: providerName,
+              //     children: provider.tab(props),
+              //   };
+              // }),
+              // {
+              //   label: <span className="addCloudProviderTab">{t('Select Cloud Providers')}</span>,
+              //   key: ADD_CLOUD_PROVIDER_TAB_KEY,
+              // },
             ]}
           />
-          <AdvancedServerParams {...props} />
+          {/* <AdvancedServerParams {...props} /> */}
         </div>
 
         <Tabs
@@ -130,24 +159,24 @@ const Session = (props) => {
           onChange={switchTabs}
           className={SessionStyles.scrollingTabCont}
           items={[
-            {
-              label: t('Capability Builder'),
-              key: SESSION_BUILDER_TABS.CAPS_BUILDER,
-              className: SessionStyles.scrollingTab,
-              children: <CapabilityEditor {...props} />,
-            },
-            {
-              label: (
-                <span>
-                  {t('Saved Capability Sets')}{' '}
-                  <Badge count={savedSessions.length} offset={[0, -3]} />
-                </span>
-              ),
-              key: SESSION_BUILDER_TABS.SAVED_CAPS,
-              className: SessionStyles.scrollingTab,
-              disabled: savedSessions.length === 0,
-              children: <SavedSessions {...props} />,
-            },
+            // {
+            //   label: t('Capability Builder'),
+            //   key: SESSION_BUILDER_TABS.CAPS_BUILDER,
+            //   className: SessionStyles.scrollingTab,
+            //   children: <CapabilityEditor {...props} />,
+            // },
+            // {
+            //   label: (
+            //     <span>
+            //       {t('Saved Capability Sets')}{' '}
+            //       <Badge count={savedSessions.length} offset={[0, -3]} />
+            //     </span>
+            //   ),
+            //   key: SESSION_BUILDER_TABS.SAVED_CAPS,
+            //   className: SessionStyles.scrollingTab,
+            //   disabled: savedSessions.length === 0,
+            //   children: <SavedSessions {...props} />,
+            // },
             {
               label: t('Attach to Session'),
               key: SESSION_BUILDER_TABS.ATTACH_TO_SESSION,
@@ -158,7 +187,7 @@ const Session = (props) => {
         />
 
         <div className={SessionStyles.sessionFooter}>
-          <div className={SessionStyles.desiredCapsLink}>
+          {/* <div className={SessionStyles.desiredCapsLink}>
             <a href="#" onClick={(e) => e.preventDefault() || shell.openExternal(LINKS.CAPS_DOCS)}>
               <LinkOutlined />
               &nbsp;
@@ -189,7 +218,7 @@ const Session = (props) => {
             >
               {t('startSession')}
             </Button>
-          )}
+          )} */}
           {isAttaching && (
             <Button
               type={BUTTON.PRIMARY}
@@ -202,7 +231,7 @@ const Session = (props) => {
         </div>
       </div>
     </Spin>,
-    <CloudProviderSelector {...props} key="CloudProviderSelector" />,
+    // <CloudProviderSelector {...props} key="CloudProviderSelector" />,
   ];
 };
 

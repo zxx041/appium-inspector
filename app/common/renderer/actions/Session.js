@@ -821,6 +821,27 @@ export function setLocalServerParams() {
   };
 }
 
+export function setLocalServerParams1(hostname, port) {
+  return async (dispatch, getState) => {
+    let serverArgs = await getSetting(SERVER_ARGS);
+    // Get saved server args from settings and set local server settings to it. If there are no saved args, set local
+    // host and port to undefined
+  
+      dispatch({
+        type: SET_SERVER_PARAM,
+        serverType: SERVER_TYPES.REMOTE,
+        name: 'port',
+        value: port,
+      });
+      dispatch({
+        type: SET_SERVER_PARAM,
+        serverType: SERVER_TYPES.REMOTE,
+        name: 'hostname',
+        value: hostname,
+      });
+  };
+}
+
 /**
  * Set the server parameters to whatever they were last saved as.
  * Params are saved whenever there's a new session

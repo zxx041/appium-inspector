@@ -352,16 +352,17 @@ export function setExpandedPaths(paths) {
  * Quit the session and go back to the new session window
  */
 export function quitSession(reason, killedByUser = true) {
-  return async (dispatch, getState) => {
-    const killAction = killKeepAliveLoop();
-    killAction(dispatch, getState);
-    const applyAction = applyClientMethod({methodName: 'quit'});
-    await applyAction(dispatch, getState);
-    dispatch({type: QUIT_SESSION_DONE});
-    if (!killedByUser) {
-      showError(new Error(reason || i18n.t('Session has been terminated')), {secs: 0});
-    }
-  };
+  // 不退出session
+  // return async (dispatch, getState) => {
+  //   const killAction = killKeepAliveLoop();
+  //   killAction(dispatch, getState);
+  //   const applyAction = applyClientMethod({methodName: 'quit'});
+  //   await applyAction(dispatch, getState);
+  //   dispatch({type: QUIT_SESSION_DONE});
+  //   if (!killedByUser) {
+  //     showError(new Error(reason || i18n.t('Session has been terminated')), {secs: 0});
+  //   }
+  // };
 }
 
 export function startRecording() {

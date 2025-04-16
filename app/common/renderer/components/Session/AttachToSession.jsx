@@ -14,7 +14,7 @@ const AttachToSession = ({
   t,
 }) => (
   <Form>
-    <Form.Item>
+    {/* <Form.Item>
       <Card>
         <p className={SessionStyles.localDesc}>
           {t('connectToExistingSessionInstructions')}
@@ -22,7 +22,7 @@ const AttachToSession = ({
           {t('selectSessionIDInDropdown')}
         </p>
       </Card>
-    </Form.Item>
+    </Form.Item> */}
     <Form.Item>
       <Row>
         <Col span={23}>

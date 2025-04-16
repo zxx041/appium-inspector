@@ -213,11 +213,11 @@ const HeaderButtons = (props) => {
     </Button.Group>
   );
 
-  const quitSessionButton = (
-    <Tooltip title={t('Quit Session')}>
-      <Button id="btnClose" icon={<CloseOutlined />} onClick={quitCurrentSession} />
-    </Tooltip>
-  );
+  // const quitSessionButton = (
+  //   <Tooltip title={t('Quit Session')}>
+  //     <Button id="btnClose" icon={<CloseOutlined />} onClick={quitCurrentSession} />
+  //   </Tooltip>
+  // );
 
   return (
     <div className={InspectorStyles['inspector-toolbar']}>
@@ -225,7 +225,7 @@ const HeaderButtons = (props) => {
         {deviceControls}
         {appModeControls}
         {generalControls}
-        {quitSessionButton}
+        {/* {quitSessionButton} */ /* 注释掉退出会话 */}
       </Space>
     </div>
   );
