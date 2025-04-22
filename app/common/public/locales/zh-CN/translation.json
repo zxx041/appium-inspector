@@ -107,10 +107,10 @@
   "Keep Session Running": "保持会话运行",
   "Quit Session": "退出会话",
   "Your session is about to expire": "您的会话即将过期",
-  "Enter Keys to Send": "输入要发送的密钥",
+  "Enter Keys to Send": "输入要发送的文本",
   "Find and Select in Source": "选择文件",
   "Clear": "清空",
-  "Send Keys": "发送密钥",
+  "Send Keys": "发送文本",
   "Done": "完成",
   "Search": "查找",
   "Show/Hide Boilerplate Code": "显示/隐藏样板代码",
@@ -294,5 +294,6 @@
   "gestureRequiredFieldsError": "Values '{{fields}}' are required for '{{eventType}}' event",
   "gestureNameCannotBeEmptyError": "Gesture name cannot be empty",
   "gestureInvalidJsonError": "Invalid JSON file. Unable to parse the file content",
-  "gestureImportedFrom": "Gesture imported from '{{fileName}}'"
+  "gestureImportedFrom": "Gesture imported from '{{fileName}}'",
+  "titleForModal": "请输入"
 }
