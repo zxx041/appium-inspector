@@ -212,7 +212,7 @@
 }
 
 .highlighter-box.inspected-element-box.hovered-element-box div {
-  background-color: rgb(100, 255, 100);
+  background-color: rgba(100, 255, 100, 0);
   transition: background-color 0.2s ease-in-out;
 }
 
