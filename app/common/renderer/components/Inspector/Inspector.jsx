@@ -72,6 +72,8 @@ const Inspector = (props) => {
     isAwaitingMjpegStream,
     toggleShowCentroids,
     showCentroids,
+    recordFlag,
+    toggleRecordFlag,
     isGestureEditorVisible,
     toggleShowAttributes,
     isSourceRefreshOn,
@@ -233,36 +235,50 @@ const Inspector = (props) => {
   const screenShotControls = (
     <div className={InspectorStyles['screenshot-controls']}>
       <Space size="middle">
+        {/*<Tooltip*/}
+        {/*  title={t(showCentroids ? 'Hide Element Handles' : 'Show Element Handles')}*/}
+        {/*  placement="topRight"*/}
+        {/*>*/}
+        {/*  <Switch*/}
+        {/*    checkedChildren={<CheckCircleOutlined />}*/}
+        {/*    unCheckedChildren={<CloseCircleOutlined />}*/}
+        {/*    defaultChecked={false}*/}
+        {/*    onChange={() => toggleShowCentroids()}*/}
+        {/*    disabled={isGestureEditorVisible}*/}
+        {/*  />*/}
+        {/*</Tooltip>*/}
+
         <Tooltip
-          title={t(showCentroids ? 'Hide Element Handles' : 'Show Element Handles')}
+          title={t(recordFlag ? 'Start Icbc Record' : 'Stop Icbc Record')}
           placement="topRight"
         >
           <Switch
             checkedChildren={<CheckCircleOutlined />}
             unCheckedChildren={<CloseCircleOutlined />}
             defaultChecked={false}
-            onChange={() => toggleShowCentroids()}
-            disabled={isGestureEditorVisible}
+            onChange={() => toggleRecordFlag()}
           />
         </Tooltip>
-        <Button.Group value={screenshotInteractionMode}>
-          <Tooltip title={t('Select Elements')}>
-            <Button
-              icon={<SelectOutlined />}
-              onClick={() => screenshotInteractionChange(SELECT)}
-              type={screenshotInteractionMode === SELECT ? BUTTON.PRIMARY : BUTTON.DEFAULT}
-              disabled={isGestureEditorVisible}
-            />
-          </Tooltip>
-          <Tooltip title={t('Tap/Swipe By Coordinates')}>
-            <Button
-              icon={<PlusSquareOutlined />}
-              onClick={() => screenshotInteractionChange(TAP_SWIPE)}
-              type={screenshotInteractionMode === TAP_SWIPE ? BUTTON.PRIMARY : BUTTON.DEFAULT}
-              disabled={isGestureEditorVisible}
-            />
-          </Tooltip>
-        </Button.Group>
+
+        {/*<Button.Group value={screenshotInteractionMode}>*/}
+        {/*  <Tooltip title={t('Select Elements')}>*/}
+        {/*    <Button*/}
+        {/*      icon={<SelectOutlined />}*/}
+        {/*      onClick={() => screenshotInteractionChange(SELECT)}*/}
+        {/*      type={screenshotInteractionMode === SELECT ? BUTTON.PRIMARY : BUTTON.DEFAULT}*/}
+        {/*      disabled={isGestureEditorVisible}*/}
+        {/*    />*/}
+        {/*  </Tooltip>*/}
+        {/*  <Tooltip title={t('Tap/Swipe By Coordinates')}>*/}
+        {/*    <Button*/}
+        {/*      icon={<PlusSquareOutlined />}*/}
+        {/*      onClick={() => screenshotInteractionChange(TAP_SWIPE)}*/}
+        {/*      type={screenshotInteractionMode === TAP_SWIPE ? BUTTON.PRIMARY : BUTTON.DEFAULT}*/}
+        {/*      disabled={isGestureEditorVisible}*/}
+        {/*    />*/}
+        {/*  </Tooltip>*/}
+        {/*</Button.Group>*/}
+
         {showScreenshot && !mjpegScreenshotUrl && (
           <Tooltip title={t('Download Screenshot')}>
             <Button icon={<DownloadOutlined />} onClick={() => downloadScreenshot(screenshot)} />

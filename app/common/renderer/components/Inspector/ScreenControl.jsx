@@ -19,6 +19,7 @@ const ScreenControl = (props) => {
     selectedTick,
     selectedInspectorTab,
     applyClientMethod,
+    recordFlag,
     t,
     selectedElement,
     selectedElementId,
@@ -122,6 +123,8 @@ const ScreenControl = (props) => {
       onMouseUp={handleScreenshotUp}
       onMouseMove={handleMouseMove}
       onClick={handleScreenshotClick}
+
+      className={styles.containerForSwipe}
     >
 
       {/*<svg*/}
@@ -153,7 +156,10 @@ const ScreenControl = (props) => {
       {/*  )}*/}
       {/*</svg>*/}
 
-      <HighlighterRects {...props} containerEl={containerEl}/>
+      { recordFlag && (
+          <HighlighterRects {...props} containerEl={containerEl}/>
+        )
+      }
 
     </div>
   );

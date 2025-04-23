@@ -520,6 +520,14 @@
   width: 100%;
 }
 
+.containerForSwipe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
 .swipeSvg line {
   stroke-width: 15;
   stroke: rgba(255, 153, 153, 0.8);

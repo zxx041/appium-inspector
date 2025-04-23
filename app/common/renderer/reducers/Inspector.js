@@ -66,6 +66,7 @@ import {
   SET_SESSION_TIME,
   SET_SHOW_BOILERPLATE,
   SET_SHOW_CENTROIDS,
+  SET_RECORD_FLAG,
   SET_SIRI_COMMAND_VALUE,
   SET_SOURCE_AND_SCREENSHOT,
   SET_USER_WAIT_TIMEOUT,
@@ -111,6 +112,7 @@ const INITIAL_STATE = {
   isSiriCommandModalVisible: false,
   siriCommandValue: '',
   showCentroids: false,
+  recordFlag: false,
   locatorTestStrategy: 'id',
   locatorTestValue: '',
   isSearchingForElements: false,
@@ -498,6 +500,12 @@ export default function inspector(state = INITIAL_STATE, action) {
       return {
         ...state,
         showCentroids: action.show,
+      };
+
+    case SET_RECORD_FLAG:
+      return {
+        ...state,
+        recordFlag: action.flag,
       };
 
     case ENTERING_COMMAND_ARGS:
