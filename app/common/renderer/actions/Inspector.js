@@ -19,6 +19,8 @@ import {
 import {log} from '../utils/logger';
 import {showError} from './Session';
 
+import {ENTRY_TO_SELECT_EL} from '../constants/common';
+
 export const SET_SESSION_DETAILS = 'SET_SESSION_DETAILS';
 export const SET_SOURCE_AND_SCREENSHOT = 'SET_SOURCE_AND_SCREENSHOT';
 export const STORE_SESSION_SETTINGS = 'STORE_SESSION_SETTINGS';
@@ -122,19 +124,23 @@ const KEEP_ALIVE_PING_INTERVAL = 20 * 1000;
 const NO_NEW_COMMAND_LIMIT = 24 * 60 * 60 * 1000; // Set timeout to 24 hours
 
 // A debounced function that calls findElement and gets info about the element
-const findElement = _.debounce(async function (strategyMap, dispatch, getState, path) {
+const findElement = _.debounce(async function (strategyMap, dispatch, getState, path, fromWhere) {
 
-  // fetch xpath and send click event to parent
-  const xpathArr = strategyMap.find(subArr => subArr[0] === 'xpath');
-  const xpathVal = xpathArr[1];
-  if(xpathVal) {
-    let msg = {
-      command: "click",
-      type: "xpath",
-      value: xpathVal
+  if(fromWhere !== ENTRY_TO_SELECT_EL.FROM_SOURCE_TREE 
+    && fromWhere !== ENTRY_TO_SELECT_EL.FROM_SEARCH_BOX) {
+    // fromWhere === FROM_LEFT_SCREEN || fromWhere === undefined
+    // fetch xpath and send click event to parent
+    const xpathArr = strategyMap.find(subArr => subArr[0] === 'xpath');
+    const xpathVal = xpathArr[1];
+    if(xpathVal) {
+      let msg = {
+        command: "click",
+        type: "xpath",
+        value: xpathVal
+      }
+      console.log("uitest-record,click msg:", msg)
+      window.parent.postMessage(msg, "*");
     }
-    console.log("uitest-record,click msg:", msg)
-    window.parent.postMessage(msg, "*");
   }
 
   for (let [strategy, selector] of strategyMap) {
@@ -201,7 +207,13 @@ const checkErrorsInAction = ({ticks}) => {
   return errors;
 };
 
-export function selectElement(path) {
+/**
+ * 
+ * @param {*} path 
+ * @param {*} fromWhere 从哪个入口进来
+ * @returns 
+ */
+export function selectElement(path, fromWhere) {
   return async (dispatch, getState) => {
     const {sourceJSON, sourceXML, expandedPaths, currentContext, automationName} =
       getState().inspector;
@@ -228,7 +240,7 @@ export function selectElement(path) {
     dispatch({type: SET_OPTIMAL_LOCATORS, strategyMap});
 
     // Debounce find element so that if another element is selected shortly after, cancel the previous search
-    await findElement(strategyMap, dispatch, getState, path);
+    await findElement(strategyMap, dispatch, getState, path, fromWhere);
   };
 }
 
@@ -678,12 +690,13 @@ export function selectLocatedElement(sourceJSON, sourceXML, bounds, id) {
     return null;
   }
 
+  // 元素搜索
   return async (dispatch, getState) => {
     dispatch({type: FINDING_ELEMENT_IN_SOURCE});
     const foundPaths = findPathsMatchingBounds();
     const foundPath = await filterFoundPaths(foundPaths, dispatch, getState);
     if (foundPath) {
-      const action = selectElement(foundPath);
+      const action = selectElement(foundPath, ENTRY_TO_SELECT_EL.FROM_SEARCH_BOX);
       await action(dispatch, getState);
     } else {
       showError(new Error(i18n.t('findingElementInSourceFailed')), {secs: 8});

@@ -27,3 +27,13 @@ export const DRIVERS = {
   SAFARI: 'safari',
   GECKO: 'gecko',
 };
+
+// 选择元素的入口
+export const ENTRY_TO_SELECT_EL = {
+  // 来自源码树
+  FROM_SOURCE_TREE: "sourceTree",
+  // 来自左侧的展示屏
+  FROM_LEFT_SCREEN: "leftScreen",
+  // 来自搜索框
+  FROM_SEARCH_BOX: "searchBox",
+}

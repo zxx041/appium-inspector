@@ -6,6 +6,8 @@ import InspectorStyles from './Inspector.module.css';
 import LocatorTestModal from './LocatorTestModal.jsx';
 import SiriCommandModal from './SiriCommandModal.jsx';
 
+import {ENTRY_TO_SELECT_EL} from '../../constants/common';
+
 /**
  * Shows the 'source' of the app as a Tree
  */
@@ -51,14 +53,13 @@ const Source = (props) => {
    * otherwise 'path' refers to the element's path.
    */
   const handleSelectElement = (path) => {
-    // 选择源码树，也能选择到元素 // 这里禁用
-    // const {selectElement, unselectElement} = props;
+    const {selectElement, unselectElement} = props;
 
-    // if (!path) {
-    //   unselectElement();
-    // } else {
-    //   selectElement(path);
-    // }
+    if (!path) {
+      unselectElement();
+    } else {
+      selectElement(path, ENTRY_TO_SELECT_EL.FROM_SOURCE_TREE);
+    }
   };
 
   // Recursives through the source and renders a TreeNode for an element
