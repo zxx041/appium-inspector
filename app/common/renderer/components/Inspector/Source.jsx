@@ -51,13 +51,14 @@ const Source = (props) => {
    * otherwise 'path' refers to the element's path.
    */
   const handleSelectElement = (path) => {
-    const {selectElement, unselectElement} = props;
+    // 选择源码树，也能选择到元素 // 这里禁用
+    // const {selectElement, unselectElement} = props;
 
-    if (!path) {
-      unselectElement();
-    } else {
-      selectElement(path);
-    }
+    // if (!path) {
+    //   unselectElement();
+    // } else {
+    //   selectElement(path);
+    // }
   };
 
   // Recursives through the source and renders a TreeNode for an element

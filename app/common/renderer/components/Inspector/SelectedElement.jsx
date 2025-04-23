@@ -57,53 +57,6 @@ const SelectedElement = (props) => {
     }
   };
 
-  // 生成点击事件处理函数
-  const handleGenerateClick = (record) => {
-    // console.log(`对 ${record.find} 执行生成点击操作`, `xpath value=${record.selector}`);
-    // 当前内嵌在一个iframe里，此处向iframe外部发送消息
-      let msg = {
-        command: "click",
-        type: "xpath",
-        value: record.selector
-      }
-      console.log(msg)
-      window.parent.postMessage(msg, "*")
-    };
-    
-    // 生成输入事件处理函数
-    const handleGenerateInput = (record) => {
-    // console.log(`对 ${record.find} 执行生成输入操作`, `xpath value=${record.selector}`);
-      let msg = {
-        command: "input",
-        type: "xpath",
-        value: record.selector
-      }
-      console.log(msg)
-      window.parent.postMessage(msg, "*")
-    };
-  
-    const selecteXpathRow = (text, record) => {
-      if (String(text).includes('xpath')) {
-        const menu = (
-          <Menu>
-            <Menu.Item key="1" onClick={() => handleGenerateClick(record)}>
-              生成点击指令
-            </Menu.Item>
-            <Menu.Item key="2" onClick={() => handleGenerateInput(record)}>
-              生成输入指令
-            </Menu.Item>
-          </Menu>
-        );
-        return (
-          <Popover content={menu} trigger="hover">
-            <span>{String(text)}</span>
-          </Popover>
-        );
-      } else {
-        return <div className={styles['selected-element-table-cells']}>{text}</div>;
-      }
-    };
-
   const selectedElementTableCell = (text, copyToClipBoard) => {
     if (copyToClipBoard) {
       return (
@@ -168,7 +121,7 @@ const SelectedElement = (props) => {
       dataIndex: 'find',
       key: 'find',
       fixed: 'left',
-      render: (text, record) => selecteXpathRow(text, record),
+      render: (text, record) => selectedElementTableCell(text, record),
     },
     {
       title: t('Selector'),

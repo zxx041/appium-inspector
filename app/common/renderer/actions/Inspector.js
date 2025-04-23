@@ -123,6 +123,20 @@ const NO_NEW_COMMAND_LIMIT = 24 * 60 * 60 * 1000; // Set timeout to 24 hours
 
 // A debounced function that calls findElement and gets info about the element
 const findElement = _.debounce(async function (strategyMap, dispatch, getState, path) {
+
+  // fetch xpath and send click event to parent
+  const xpathArr = strategyMap.find(subArr => subArr[0] === 'xpath');
+  const xpathVal = xpathArr[1];
+  if(xpathVal) {
+    let msg = {
+      command: "click",
+      type: "xpath",
+      value: xpathVal
+    }
+    console.log("uitest-record,click msg:", msg)
+    window.parent.postMessage(msg, "*");
+  }
+
   for (let [strategy, selector] of strategyMap) {
     // Get the information about the element
     const action = callClientMethod({

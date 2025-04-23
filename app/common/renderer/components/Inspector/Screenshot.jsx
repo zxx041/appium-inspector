@@ -1,5 +1,5 @@
-import {Spin} from 'antd';
-import React, {useRef, useState} from 'react';
+import {Spin, Modal, Input} from 'antd';
+import React, {useRef, useState, useEffect} from 'react';
 
 import {GESTURE_ITEM_STYLES, POINTER_TYPES} from '../../constants/gestures';
 import {DEFAULT_SWIPE, DEFAULT_TAP, SCREENSHOT_INTERACTION_MODE} from '../../constants/screenshot';
@@ -26,7 +26,56 @@ const Screenshot = (props) => {
     selectedInspectorTab,
     applyClientMethod,
     t,
+    selectedElement,
+    selectedElementId,
   } = props;
+
+  // 使用 useEffect 监听 selectedElement.attributes.focused 的变化
+  useEffect(() => {
+    const focused = selectedElement && selectedElement.attributes && selectedElement.attributes.focused;
+    if(focused==='true') {
+      setModalOpen(true);
+    }
+    else {
+      setModalOpen(false);
+    }
+  }, [selectedElement]);  
+
+  const inputRef = useRef(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  // modal save button
+  const onSaveAsOk = () => {
+    console.log("strategyMap", selectedElement.strategyMap);
+    if (inputRef.current) {
+      // sendKeys to phone
+      applyClientMethod({
+        methodName: 'sendKeys',
+        elementId: selectedElementId,
+        args: [inputRef.current.input.value || ''],
+      });
+
+      // send input event to parent
+      const xpathArr = selectedElement.strategyMap.find(subArr => subArr[0] === 'xpath');
+      const xpathVal = xpathArr[1];
+      if(xpathVal) {
+        let msg = {
+          command: "input",
+          type: "xpath",
+          value: xpathVal
+        }
+        console.log("uitest-record,input msg:", msg);
+        window.parent.postMessage(msg, "*");
+      }
+    }
+
+    setModalOpen(false); 
+  };
+  // modal cancel button
+  const onCancel = () => {
+    setModalOpen(false); 
+  };
+  // end 
 
   const containerEl = useRef();
   const [x, setX] = useState();
@@ -238,6 +287,16 @@ const Screenshot = (props) => {
           )}
         </div>
       </div>
+      <Modal
+          open={modalOpen}
+          title={t('titleForModal')}
+          okText={t('Send Keys')}
+          cancelText={t('Cancel')} 
+          onCancel={onCancel}
+          onOk={onSaveAsOk}
+        >
+          <Input ref={inputRef} placeholder={t('Enter Keys to Send')}/>
+        </Modal>
     </Spin>
   );
 };
