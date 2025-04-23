@@ -192,7 +192,8 @@
 
 .highlighter-box {
   position: absolute;
-  opacity: 0.5;
+  /*opacity: 0.5;*/
+  background-color: rgba(0, 255, 0, 0);
   cursor: pointer;
 }
 
@@ -203,9 +204,11 @@
 }
 
 .highlighter-box.hovered-element-box div {
-  background-color: yellow;
-  visibility: hidden;
-  transition: background-color 0.2s ease-in-out;
+  background-color: rgba(255, 255, 0, 0.35);
+  /*background-color: yellow;*/
+  /*opacity: 1;*/
+  /*visibility: hidden;*/
+  /*transition: background-color 0.2s ease-in-out;*/
 }
 
 .highlighter-box.inspected-element-box.hovered-element-box div {
