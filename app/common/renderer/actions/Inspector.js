@@ -41,6 +41,7 @@ export const UNSELECT_HOVERED_CENTROID = 'UNSELECT_HOVERED_CENTROID';
 export const SELECT_CENTROID = 'SELECT_CENTROID';
 export const UNSELECT_CENTROID = 'UNSELECT_CENTROID';
 export const SET_SHOW_CENTROIDS = 'SET_SHOW_CENTROIDS';
+export const SET_RECORD_FLAG = 'SET_RECORD_FLAG';
 
 export const QUIT_SESSION_REQUESTED = 'QUIT_SESSION_REQUESTED';
 export const QUIT_SESSION_DONE = 'QUIT_SESSION_DONE';
@@ -747,6 +748,15 @@ export function toggleShowCentroids() {
     dispatch({type: SET_SHOW_CENTROIDS, show});
   };
 }
+
+export function toggleRecordFlag(){
+  return (dispatch, getState) => {
+    const {recordFlag} = getState().inspector;
+    const flag = !recordFlag;
+    dispatch({type: SET_RECORD_FLAG, flag});
+  };
+}
+
 
 export function getActiveAppId(isIOS, isAndroid) {
   return async (dispatch, getState) => {
