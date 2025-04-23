@@ -18,7 +18,7 @@ ipcRenderer.on('appium-language-changed', (event, message) => {
 
 const Root = ({store}) => (
   <Provider store={store}>
-    <MemoryRouter initialEntries={['/session_raw']}>
+    <MemoryRouter initialEntries={['/']}>
       <Suspense fallback={<Spinner />}>
         <Routes>
           <Route path="/" element={<SessionPage />} />
