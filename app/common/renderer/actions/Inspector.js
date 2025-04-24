@@ -230,6 +230,10 @@ export function selectElement(path, fromWhere) {
 
     // fetch xpath and send click event to parent
     if(fromWhere === ENTRY_TO_SELECT_EL.FROM_LEFT_SCREEN) {  
+      let selectedElementTemp = {
+        ...selectedElement,
+        strategyMap: strategyMap,
+      };
       const xpathArr = strategyMap.find(subArr => subArr[0] === 'xpath');
       const xpathVal = xpathArr[1];
       if(xpathVal) {
@@ -237,7 +241,7 @@ export function selectElement(path, fromWhere) {
           command: "click",
           type: "xpath",
           value: xpathVal,
-          selectedElement
+          selectedElement: selectedElementTemp,
         }
         console.log("uitest-record,click msg:", msg)
         window.parent.postMessage(msg, "*");
