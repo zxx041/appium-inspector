@@ -2,6 +2,8 @@ import React from 'react';
 
 import InspectorCSS from './Inspector.module.css';
 
+import {ENTRY_TO_SELECT_EL} from '../../constants/common';
+
 /**
  * Absolute positioned divs that overlay the app screenshot and highlight the bounding
  * boxes of the elements in the app
@@ -35,7 +37,7 @@ const HighlighterRectForElem = (props) => {
       className={highlighterClasses.join(' ').trim()}
       onMouseOver={() => selectHoveredElement(key)}
       onMouseOut={unselectHoveredElement}
-      onClick={() => (key === selectedElement.path ? unselectElement() : selectElement(key))}
+      onClick={() => (key === selectedElement.path ? unselectElement() : selectElement(key, ENTRY_TO_SELECT_EL.FROM_LEFT_SCREEN))}
       key={key}
       style={{left: left || 0, top: top || 0, width: width || 0, height: height || 0}}
     >

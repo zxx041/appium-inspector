@@ -7,6 +7,8 @@ import {INSPECTOR_TABS} from '../../constants/session-inspector';
 import ScreenControl from './ScreenControl.jsx';
 import styles from './Inspector.module.css';
 
+import {ENTRY_TO_SELECT_EL} from '../../constants/common';
+
 const {POINTER_UP, POINTER_DOWN, PAUSE, POINTER_MOVE} = POINTER_TYPES;
 const {TAP, SELECT, SWIPE, TAP_SWIPE} = SCREENSHOT_INTERACTION_MODE;
 
@@ -28,12 +30,13 @@ const Screenshot = (props) => {
     t,
     selectedElement,
     selectedElementId,
+    fromWhere,
   } = props;
 
   // 使用 useEffect 监听 selectedElement.attributes.focused 的变化
   useEffect(() => {
     const focused = selectedElement && selectedElement.attributes && selectedElement.attributes.focused;
-    if(focused==='true') {
+    if(focused==='true' && fromWhere === ENTRY_TO_SELECT_EL.FROM_LEFT_SCREEN) {
       setModalOpen(true);
     }
     else {
@@ -62,7 +65,8 @@ const Screenshot = (props) => {
         let msg = {
           command: "input",
           type: "xpath",
-          value: xpathVal
+          value: xpathVal,
+          selectedElement
         }
         console.log("uitest-record,input msg:", msg);
         window.parent.postMessage(msg, "*");

@@ -3,6 +3,8 @@ import React from 'react';
 import {CENTROID_STYLES, RENDER_CENTROID_AS} from '../../constants/screenshot';
 import InspectorCSS from './Inspector.module.css';
 
+import {ENTRY_TO_SELECT_EL} from '../../constants/common';
+
 const {CENTROID, OVERLAP, EXPAND} = RENDER_CENTROID_AS;
 
 // Generate new coordinates along a circlular trajectory
@@ -59,7 +61,7 @@ const HighlighterCentroid = (props) => {
       if (path === selectedElementPath) {
         unselectElement();
       } else {
-        selectElement(path);
+        selectElement(path, ENTRY_TO_SELECT_EL.FROM_LEFT_SCREEN);
       }
     }
   };
