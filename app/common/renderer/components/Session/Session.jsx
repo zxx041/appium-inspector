@@ -84,10 +84,14 @@ const Session = (props) => {
       // 设置 主机名 和 端口
       if(hostname && port) {
         console.log("msg from outer html", "hostname:", hostname, "port:", port);
-        setLocalServerParams1(hostname, port);
+        (async () => {
+          await setLocalServerParams1(hostname, port);
+        })();
       }
 
-      // getRunningSessions();
+      // 主机名 和 端口 变成新的地址后，再执行一次 switchTabs
+      // 刷出新主机 上的 所有 session
+      switchTabs(SESSION_BUILDER_TABS.ATTACH_TO_SESSION);
      
       if(sessionId) {
         console.log("msg from outer html, sessionId:", sessionId);
