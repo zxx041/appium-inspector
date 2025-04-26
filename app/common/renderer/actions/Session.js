@@ -616,6 +616,15 @@ export function newSession(caps, attachSessId = null) {
       mjpegScreenshotUrl = `${https ? 'https' : 'http'}://${host}:${mjpegScreenshotPort}`;
     }
 
+    // http://127.0.0.1:9100 -> http://host:9100
+    console.log("appium server host:", host);
+    if(mjpegScreenshotUrl.startsWith('http://127.0.0.1')) {
+      mjpegScreenshotUrl = 'http://127.0.0.1:9100';
+      const mjpegScreenshotPort = mjpegScreenshotUrl.split(':').pop();
+      mjpegScreenshotUrl = 'http://' + host + ':' + mjpegScreenshotPort;
+    }
+    console.log("mjpegScreenshotUrl convert:", mjpegScreenshotUrl);
+
     // pass some state to the inspector that it needs to build recorder
     // code boilerplate
     const action = setSessionDetails({
