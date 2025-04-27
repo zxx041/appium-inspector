@@ -83,7 +83,7 @@ const Session = (props) => {
 
       // 设置 主机名 和 端口
       if(hostname && port) {
-        console.log("msg from outer html", "hostname:", hostname, "port:", port);
+        console.log("inspecor:msg from outer html,", "hostname:", hostname, "port:", port);
         (async () => {
           await setLocalServerParams1(hostname, port);
         })();
@@ -93,14 +93,20 @@ const Session = (props) => {
       // 刷出新主机 上的 所有 session
       switchTabs(SESSION_BUILDER_TABS.ATTACH_TO_SESSION);
      
-      if(sessionId) {
-        console.log("msg from outer html, sessionId:", sessionId);
+      // 2秒后再执行 loadNewSession
+      setTimeout(() => {
+        console.log("inspecor:msg from outer html,sessionId:", sessionId);
         loadNewSession(null, sessionId);
-      }
+      }, 2000);
+      // if(sessionId) {
+      //   console.log("msg from outer html, sessionId:", sessionId);
+      //   loadNewSession(null, sessionId);
+      // }
       
      };
 
     // 监听 父页面送来的 message 事件
+    console.log("inspecor:addEventListener")
     window.addEventListener('message', handleMessage);
 
     (async () => {
