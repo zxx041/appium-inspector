@@ -123,6 +123,8 @@ export const SET_GESTURE_UPLOAD_ERROR = 'SET_GESTURE_UPLOAD_ERROR';
 
 export const SET_ENTRY_TO_SELECT_EL = 'ENTRY_TO_SELECT_EL';
 
+export const SET_APP_SOURSE_FLAG = "SET_APP_SOURSE_FLAG";
+
 const KEEP_ALIVE_PING_INTERVAL = 20 * 1000;
 const NO_NEW_COMMAND_LIMIT = 24 * 60 * 60 * 1000; // Set timeout to 24 hours
 
@@ -196,17 +198,18 @@ const checkErrorsInAction = ({ticks}) => {
  * 
  * @param {*} path 
  * @param {*} fromWhere 从哪个入口进来
+ * @param 
  * @returns 
  */
-export function selectElement(path, fromWhere) {
+export function selectElement(path, fromWhere, position) {
   return async (dispatch, getState) => {
     dispatch({type: SET_ENTRY_TO_SELECT_EL, fromWhere});
-    const {sourceJSON, sourceXML, expandedPaths, currentContext, automationName} =
+    const {sourceJSON, sourceXML, expandedPaths, currentContext, automationName,isSourceRefreshOn,methodCallInProgress,mjpegScreenshotUrl} =
       getState().inspector;
     const isNative = currentContext === NATIVE_APP;
     // Set the selected element in the source tree
     const selectedElement = findJSONElementByPath(path, sourceJSON);
-
+    selectedElement.position = position || {}
     console.log("selectedElement::", selectedElement);
     
     dispatch({type: SELECT_ELEMENT, selectedElement});
@@ -242,6 +245,8 @@ export function selectElement(path, fromWhere) {
           type: "xpath",
           value: xpathVal,
           selectedElement: selectedElementTemp,
+          // 选择元素时，源码树是否正在刷新
+          sourceLoading:!!methodCallInProgress && mjpegScreenshotUrl && isSourceRefreshOn
         }
         console.log("uitest-record,click msg:", msg)
         window.parent.postMessage(msg, "*");
@@ -1124,5 +1129,12 @@ export function tapTickCoordinates(x, y) {
 export function toggleShowAttributes() {
   return (dispatch) => {
     dispatch({type: TOGGLE_SHOW_ATTRIBUTES});
+  };
+}
+
+// 是否展示源码树
+export function setSourceTreeOpenFlag () {
+  return (dispatch) => {
+    dispatch({type: SET_APP_SOURSE_FLAG});
   };
 }

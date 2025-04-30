@@ -38,7 +38,7 @@
 
 .inspector-main .screenshot-container {
   max-width: 500px;
-  max-height: calc(100% - 50px);
+  /* max-height: calc(100% - ÷50px); */
   flex-grow: 1;
   flex-shrink: 2;
   flex-basis: 400px;
@@ -197,6 +197,21 @@
   cursor: pointer;
 }
 
+/* 显示不能进行鼠标操作 */
+.highlighter-box.disabled-element-box div{
+ cursor: not-allowed !important;
+}
+.highlighter-box.inspected-element-box.disabled-element-box div{
+  cursor: not-allowed !important;
+ }
+.highlighter-box.hovered-element-box.disabled-element-box div{
+  cursor: not-allowed !important;
+ }
+.highlighter-box.inspected-element-box.hovered-element-box.disabled-element-box div{
+  cursor: not-allowed !important;
+ }
+  
+
 .highlighter-box.inspected-element-box div {
   background-color: rgba(255, 255, 0, 0);
   visibility: hidden;
@@ -204,7 +219,7 @@
 }
 
 .highlighter-box.hovered-element-box div {
-  background-color: rgba(255, 255, 0, 0.35);
+  background-color: rgba(64,196,255,0.35);
   /*background-color: yellow;*/
   /*opacity: 1;*/
   /*visibility: hidden;*/
@@ -222,6 +237,19 @@
   height: 100%;
   width: 100%;
   visibility: visible;
+}
+
+.highlighter-box.inspected-element-box div{
+  box-shadow:0 0 10px 5px rgba(255, 255, 255, 0.4);
+  border-radius:5px ;
+  /* background:#f0f0f0; */
+}
+.highlighter-box.inspected-element-box div {
+  content: '';
+  position: absolute; 
+  /* border: 1px solid white;  */
+  z-index: 1002;
+  pointer-events: none; 
 }
 
 .centroid-box {

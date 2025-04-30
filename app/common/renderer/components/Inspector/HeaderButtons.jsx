@@ -9,9 +9,11 @@ import {
   ReloadOutlined,
   SearchOutlined,
   VideoCameraOutlined,
+  EyeOutlined,
+  EyeInvisibleOutlined
 } from '@ant-design/icons';
 import {Button, Select, Space, Tooltip} from 'antd';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {BiCircle, BiSquare} from 'react-icons/bi';
 import {HiOutlineHome, HiOutlineMicrophone} from 'react-icons/hi';
 import {IoChevronBackOutline} from 'react-icons/io5';
@@ -22,6 +24,10 @@ import {APP_MODE} from '../../constants/session-inspector';
 import {shell} from '../../polyfills';
 import InspectorStyles from './Inspector.module.css';
 
+import Rec from './rec.svg';
+import Rec2 from './rec2.svg';
+
+
 const HeaderButtons = (props) => {
   const {
     selectAppMode,
@@ -30,6 +36,8 @@ const HeaderButtons = (props) => {
     isSourceRefreshOn,
     toggleRefreshingState,
     isRecording,
+    recordFlag,
+    toggleRecordFlag,
     startRecording,
     pauseRecording,
     showLocatorTestModal,
@@ -41,15 +49,32 @@ const HeaderButtons = (props) => {
     currentContext,
     setContext,
     t,
+    setSourceTreeOpenFlag,
+    sourceTreeOpenFlag
   } = props;
 
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let intervalId
+    if(recordFlag){
+        intervalId = setInterval(() => {
+        setCount(prevCount => prevCount + 1); 
+        // 使用函数式更新防止闭包问题
+      }, 500); // 
+    } else {
+      return () => clearInterval(intervalId); 
+    }
+  },[recordFlag]);
+
   const deviceControls = (
-    <Button.Group>
+    <Button.Group style={{display:'flex',flexDirection:'column'}}>
       {driver && driver.client.isIOS && (
         <>
           <Tooltip title={t('Press Home Button')}>
             <Button
               id="btnPressHomeButton"
+              style={{marginLeft: '-1px'}}
               icon={<HiOutlineHome className={InspectorStyles['custom-button-icon']} />}
               onClick={() =>
                 applyClientMethod({
@@ -166,13 +191,14 @@ const HeaderButtons = (props) => {
   );
 
   const generalControls = (
-    <Button.Group>
+    <Button.Group style={{display:'flex',flexDirection:'column',marginTop:'8px'}}>
       {mjpegScreenshotUrl && !isSourceRefreshOn && (
         <Tooltip title={t('Start Refreshing Source')}>
           <Button
             id="btnStartRefreshing"
             icon={<PlayCircleOutlined />}
             onClick={toggleRefreshingState}
+            style={{marginLeft: '-1px'}}
           />
         </Tooltip>
       )}
@@ -195,18 +221,19 @@ const HeaderButtons = (props) => {
       <Tooltip title={t('Search for element')}>
         <Button id="searchForElement" icon={<SearchOutlined />} onClick={showLocatorTestModal} />
       </Tooltip>
-      {!isRecording && (
+      {!recordFlag && (
         <Tooltip title={t('Start Recording')}>
-          <Button id="btnStartRecording" icon={<VideoCameraOutlined />} onClick={startRecording} />
+          <Button id="btnStartRecording" icon={<VideoCameraOutlined />} onClick={toggleRecordFlag} />
         </Tooltip>
       )}
-      {isRecording && (
+      {/* icon={<VideoCameraOutlined />} */}
+      {recordFlag && (
         <Tooltip title={t('Pause Recording')}>
           <Button
             id="btnPause"
-            icon={<VideoCameraOutlined />}
+            icon={<img style={{width:'24px',height:'24px'}} src={count % 2 === 0?Rec:Rec2} alt="icon" />}
             type={BUTTON.DANGER}
-            onClick={pauseRecording}
+            onClick={toggleRecordFlag}
           />
         </Tooltip>
       )}
@@ -220,13 +247,42 @@ const HeaderButtons = (props) => {
   // );
 
   return (
-    <div className={InspectorStyles['inspector-toolbar']}>
-      <Space size="middle">
+    // className={InspectorStyles['inspector-toolbar']}
+    <div style={{height: '100%',display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between'}}>
+      {/* <Space size="middle"> */}
+        <div style={{marginLeft: '1em'}}>
         {deviceControls}
-        {appModeControls}
+        {/* {appModeControls} */}
         {generalControls}
         {/* {quitSessionButton} */ /* 注释掉退出会话 */}
-      </Space>
+        </div>
+        <div>
+        <Button.Group style={{marginLeft:'1em'}}>
+        {!sourceTreeOpenFlag
+         && (
+        <Tooltip title={t('Look App Source')}>
+          <Button
+            id="btnStartRefreshing"
+            icon={<EyeOutlined />}
+            onClick={setSourceTreeOpenFlag}
+          />
+        </Tooltip>
+        )}
+        {sourceTreeOpenFlag
+         && (
+        <Tooltip title={t('NotLook App Source')}>
+          <Button
+            id="btnStartRefreshing"
+            icon={<EyeInvisibleOutlined />}
+            onClick={setSourceTreeOpenFlag}
+          />
+        </Tooltip>
+        )}
+        </Button.Group>
+        </div>
+      {/* </Space> */}
     </div>
   );
 };

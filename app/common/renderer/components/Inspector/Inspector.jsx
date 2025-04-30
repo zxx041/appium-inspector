@@ -79,6 +79,7 @@ const Inspector = (props) => {
     isSourceRefreshOn,
     windowSize,
     t,
+    sourceTreeOpenFlag,
   } = props;
 
   const didInitialResize = useRef(false);
@@ -298,7 +299,7 @@ const Inspector = (props) => {
         className={InspectorStyles['screenshot-container']}
         ref={(el) => (screenshotEl.current = el)}
       >
-        {screenShotControls}
+        {/* {screenShotControls} */}
         {showScreenshot && <Screenshot {...props} scaleRatio={scaleRatio} />}
         {screenshotError && t('couldNotObtainScreenshot', {screenshotError})}
         {!showScreenshot && (
@@ -307,19 +308,23 @@ const Inspector = (props) => {
           </Spin>
         )}
       </div>
+      <div>
+      <HeaderButtons quitCurrentSession={quitCurrentSession} {...props} />
+      </div>
       <div id="sourceTreeContainer" className={InspectorStyles['interaction-tab-container']}>
         <Tabs
           activeKey={selectedInspectorTab}
           size="small"
           onChange={(tab) => selectInspectorTab(tab)}
+          className='myTabs'
           items={[
             {
               label: t('Source'),
               key: INSPECTOR_TABS.SOURCE,
               disabled: !showScreenshot,
-              children: (
+              children: sourceTreeOpenFlag?(
                 <div className="action-row">
-                  <div className="action-col">
+                  <div className="action-col" >
                     <Card
                       title={
                         <span>
@@ -361,6 +366,26 @@ const Inspector = (props) => {
                   <div
                     id="selectedElementContainer"
                     className={`${InspectorStyles['interaction-tab-container']} ${InspectorStyles['element-detail-container']} action-col`}
+                  >
+                    <Card
+                      title={
+                        <span>
+                          <TagOutlined /> {t('selectedElement')}
+                        </span>
+                      }
+                      className={InspectorStyles['selected-element-card']}
+                    >
+                      {selectedElement.path && <SelectedElement {...props} />}
+                      {!selectedElement.path && <i>{t('selectElementInSource')}</i>}
+                    </Card>
+                  </div>
+                </div>
+              ):(
+                <div className="action-row">
+                  <div
+                    id="selectedElementContainer"
+                    className={`${InspectorStyles['interaction-tab-container']} ${InspectorStyles['element-detail-container']} action-col`}
+                    style={{maxWidth:'100%',padding:'0'}}
                   >
                     <Card
                       title={
@@ -453,7 +478,7 @@ const Inspector = (props) => {
 
   return (
     <div className={InspectorStyles['inspector-container']}>
-      <HeaderButtons quitCurrentSession={quitCurrentSession} {...props} />
+     
       {main}
       <Modal
         title={t('Session Inactive')}

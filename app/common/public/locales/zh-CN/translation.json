@@ -110,7 +110,7 @@
   "Enter Keys to Send": "输入要发送的文本",
   "Find and Select in Source": "选择文件",
   "Clear": "清空",
-  "Send Keys": "发送文本",
+  "Send Keys": "确定",
   "Done": "完成",
   "Search": "查找",
   "Show/Hide Boilerplate Code": "显示/隐藏样板代码",
@@ -295,5 +295,7 @@
   "gestureNameCannotBeEmptyError": "Gesture name cannot be empty",
   "gestureInvalidJsonError": "Invalid JSON file. Unable to parse the file content",
   "gestureImportedFrom": "Gesture imported from '{{fileName}}'",
-  "titleForModal": "请输入"
+  "titleForModal": "请输入文本内容",
+  "Look App Source":"查看应用源",
+  "NotLook App Source":"隐藏应用源"
 }

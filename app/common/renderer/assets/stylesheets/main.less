@@ -101,3 +101,42 @@ body::-webkit-scrollbar-corner {
 .ant-tabs-tab {
   font-size: 14px;
 }
+
+// 弹出的输入模态窗口样式
+.my-custom-modal {
+  .ant-modal-content{
+    .ant-modal-body{
+      padding: 0 20px !important; 
+     }    
+     .ant-input-affix-wrapper{
+      background: #f6f6f6 !important; 
+      border-radius: 20px !important; 
+      border: none !important; 
+     }
+     .ant-input{
+      background: #f6f6f6 !important; 
+      border: none !important; 
+     }
+  }
+  .ant-modal-header{
+    border:none !important; 
+  }
+  .ant-modal-footer{
+    border:none !important; 
+    margin-top:10px !important; 
+    .ant-btn{
+      border-radius: 10px !important; 
+    }
+  }
+} 
+.myTabs{
+  .ant-tabs-nav{
+    display: none !important;
+  }
+  .ant-tabs-nav-list{
+   display: none !important;
+  }
+}
+.ant-btn-group > .ant-btn:first-child, .ant-btn-group > span:first-child > .ant-btn{
+  margin-left: -1px !important;
+}       

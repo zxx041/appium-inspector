@@ -86,6 +86,7 @@ import {
   UNSELECT_TICK_ELEMENT,
   SET_GESTURE_UPLOAD_ERROR,
   SET_ENTRY_TO_SELECT_EL,
+  SET_APP_SOURSE_FLAG,
 } from '../actions/Inspector';
 import {SCREENSHOT_INTERACTION_MODE} from '../constants/screenshot';
 import {APP_MODE, INSPECTOR_TABS, NATIVE_APP} from '../constants/session-inspector';
@@ -132,6 +133,7 @@ const INITIAL_STATE = {
   isAwaitingMjpegStream: true,
   showSourceAttrs: false,
   gestureUploadErrors: null,
+  sourceTreeOpenFlag:false,
 };
 
 let nextState;
@@ -664,7 +666,7 @@ export default function inspector(state = INITIAL_STATE, action) {
 
     case TOGGLE_REFRESHING_STATE:
       return {...state, isSourceRefreshOn: !state.isSourceRefreshOn};
-
+ 
     case SET_GESTURE_UPLOAD_ERROR:
       return {...state, gestureUploadErrors: action.errors};
 
@@ -674,6 +676,13 @@ export default function inspector(state = INITIAL_STATE, action) {
           ...state,
           fromWhere: action.fromWhere,
         };
+    
+    case SET_APP_SOURSE_FLAG:
+      return {
+        ...state, 
+        sourceTreeOpenFlag: !state.sourceTreeOpenFlag
+      };   
+
     default:
       return {...state};
   }
