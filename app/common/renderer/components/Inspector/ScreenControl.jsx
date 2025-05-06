@@ -1,4 +1,5 @@
 import styles from './Inspector.module.css';
+import Bluebird from 'bluebird';
 import React, {useRef, useState, useEffect} from 'react';
 import {DEFAULT_SWIPE, DEFAULT_TAP, SCREENSHOT_INTERACTION_MODE} from '../../constants/screenshot';
 import {POINTER_TYPES} from '../../constants/gestures';
@@ -94,6 +95,13 @@ const ScreenControl = (props) => {
         }
       ]
     });
+
+    // 每次发生Tap 循环8次获取源码树，每次等待1秒。 以保证当前的源码树是最新的
+    const maxIterations = 8;
+    for (let i = 0; i < maxIterations; i++) {
+        await Bluebird.delay(1000);
+        await applyClientMethod({methodName: 'getPageSource'});
+    }
   };
 
   const handleDoSwipe = async (swipeEndLocal) => {

@@ -95,21 +95,21 @@ const HeaderButtons = (props) => {
       )}
       {driver && driver.client.isAndroid && (
         <>
-          <Tooltip title={t('Press Back Button')}>
+          <Tooltip title={t('Press Back Button')} placement="right">
             <Button
               id="btnPressHomeButton"
               icon={<IoChevronBackOutline className={InspectorStyles['custom-button-icon']} />}
               onClick={() => applyClientMethod({methodName: 'pressKeyCode', args: [4]})}
             />
           </Tooltip>
-          <Tooltip title={t('Press Home Button')}>
+          <Tooltip title={t('Press Home Button')} placement="right">
             <Button
               id="btnPressHomeButton"
               icon={<BiCircle className={InspectorStyles['custom-button-icon']} />}
               onClick={() => applyClientMethod({methodName: 'pressKeyCode', args: [3]})}
             />
           </Tooltip>
-          <Tooltip title={t('Press App Switch Button')}>
+          <Tooltip title={t('Press App Switch Button')} placement="right">
             <Button
               id="btnPressHomeButton"
               icon={<BiSquare className={InspectorStyles['custom-button-icon']} />}
@@ -193,7 +193,7 @@ const HeaderButtons = (props) => {
   const generalControls = (
     <Button.Group style={{display:'flex',flexDirection:'column',marginTop:'8px'}}>
       {mjpegScreenshotUrl && !isSourceRefreshOn && (
-        <Tooltip title={t('Start Refreshing Source')}>
+        <Tooltip title={t('Start Refreshing Source')} placement="right">
           <Button
             id="btnStartRefreshing"
             icon={<PlayCircleOutlined />}
@@ -203,7 +203,7 @@ const HeaderButtons = (props) => {
         </Tooltip>
       )}
       {mjpegScreenshotUrl && isSourceRefreshOn && (
-        <Tooltip title={t('Pause Refreshing Source')}>
+        <Tooltip title={t('Pause Refreshing Source')} placement="right">
           <Button
             id="btnPauseRefreshing"
             icon={<PauseCircleOutlined />}
@@ -211,24 +211,24 @@ const HeaderButtons = (props) => {
           />
         </Tooltip>
       )}
-      <Tooltip title={t('refreshSource')}>
+      <Tooltip title={t('refreshSource')} placement="right">
         <Button
           id="btnReload"
           icon={<ReloadOutlined />}
           onClick={() => applyClientMethod({methodName: 'getPageSource'})}
         />
       </Tooltip>
-      <Tooltip title={t('Search for element')}>
+      <Tooltip title={t('Search for element')} placement="right">
         <Button id="searchForElement" icon={<SearchOutlined />} onClick={showLocatorTestModal} />
       </Tooltip>
       {!recordFlag && (
-        <Tooltip title={t('Start Recording')}>
+        <Tooltip title={t('Start Recording')} placement="right">
           <Button id="btnStartRecording" icon={<VideoCameraOutlined />} onClick={toggleRecordFlag} />
         </Tooltip>
       )}
       {/* icon={<VideoCameraOutlined />} */}
       {recordFlag && (
-        <Tooltip title={t('Pause Recording')}>
+        <Tooltip title={t('Pause Recording')} placement="right">
           <Button
             id="btnPause"
             icon={<img style={{width:'24px',height:'24px'}} src={count % 2 === 0?Rec:Rec2} alt="icon" />}
@@ -258,11 +258,12 @@ const HeaderButtons = (props) => {
         {generalControls}
         {/* {quitSessionButton} */ /* 注释掉退出会话 */}
         </div>
+
         <div>
         <Button.Group style={{marginLeft:'1em'}}>
         {!sourceTreeOpenFlag
          && (
-        <Tooltip title={t('Look App Source')}>
+        <Tooltip title={t('Look App Source')} placement="right">
           <Button
             id="btnStartRefreshing"
             icon={<EyeOutlined />}
@@ -272,7 +273,7 @@ const HeaderButtons = (props) => {
         )}
         {sourceTreeOpenFlag
          && (
-        <Tooltip title={t('NotLook App Source')}>
+        <Tooltip title={t('NotLook App Source')} placement="right">
           <Button
             id="btnStartRefreshing"
             icon={<EyeInvisibleOutlined />}
@@ -282,6 +283,7 @@ const HeaderButtons = (props) => {
         )}
         </Button.Group>
         </div>
+
       {/* </Space> */}
     </div>
   );
