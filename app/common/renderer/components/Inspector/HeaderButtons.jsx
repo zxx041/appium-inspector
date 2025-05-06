@@ -71,7 +71,7 @@ const HeaderButtons = (props) => {
     <Button.Group style={{display:'flex',flexDirection:'column'}}>
       {driver && driver.client.isIOS && (
         <>
-          <Tooltip title={t('Press Home Button')}>
+          <Tooltip title={t('Press Home Button')} placement="right">
             <Button
               id="btnPressHomeButton"
               style={{marginLeft: '-1px'}}
@@ -84,7 +84,7 @@ const HeaderButtons = (props) => {
               }
             />
           </Tooltip>
-          <Tooltip title={t('Execute Siri Command')}>
+          <Tooltip title={t('Execute Siri Command')} placement="right">
             <Button
               id="siriCommand"
               icon={<HiOutlineMicrophone className={InspectorStyles['custom-button-icon']} />}
@@ -248,40 +248,40 @@ const HeaderButtons = (props) => {
 
   return (
     // className={InspectorStyles['inspector-toolbar']}
-    <div style={{height: '100%',display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between'}}>
+    <div style={{height: '100%', display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between'}}>
       {/* <Space size="middle"> */}
         <div style={{marginLeft: '1em'}}>
-        {deviceControls}
-        {/* {appModeControls} */}
-        {generalControls}
-        {/* {quitSessionButton} */ /* 注释掉退出会话 */}
+          {deviceControls}
+          {/* {appModeControls} */}
+          {generalControls}
+          {/* {quitSessionButton} */ /* 注释掉退出会话 */}
         </div>
 
         <div>
-        <Button.Group style={{marginLeft:'1em'}}>
-        {!sourceTreeOpenFlag
-         && (
-        <Tooltip title={t('Look App Source')} placement="right">
-          <Button
-            id="btnStartRefreshing"
-            icon={<EyeOutlined />}
-            onClick={setSourceTreeOpenFlag}
-          />
-        </Tooltip>
-        )}
-        {sourceTreeOpenFlag
-         && (
-        <Tooltip title={t('NotLook App Source')} placement="right">
-          <Button
-            id="btnStartRefreshing"
-            icon={<EyeInvisibleOutlined />}
-            onClick={setSourceTreeOpenFlag}
-          />
-        </Tooltip>
-        )}
-        </Button.Group>
+          <Button.Group style={{marginLeft:'1em'}}>
+            {!sourceTreeOpenFlag
+            && (
+            <Tooltip title={t('Look App Source')} placement="right">
+              <Button
+                id="btnStartRefreshing"
+                icon={<EyeOutlined />}
+                onClick={setSourceTreeOpenFlag}
+              />
+            </Tooltip>
+            )}
+            {sourceTreeOpenFlag
+            && (
+            <Tooltip title={t('NotLook App Source')} placement="right">
+              <Button
+                id="btnStartRefreshing"
+                icon={<EyeInvisibleOutlined />}
+                onClick={setSourceTreeOpenFlag}
+              />
+            </Tooltip>
+            )}
+          </Button.Group>
         </div>
 
       {/* </Space> */}
