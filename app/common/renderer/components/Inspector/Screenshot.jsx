@@ -1,6 +1,5 @@
 import {Spin, Modal, Input,Button} from 'antd';
 import React, {useRef, useState, useEffect} from 'react';
-import { SearchOutlined } from '@ant-design/icons';
 import {GESTURE_ITEM_STYLES, POINTER_TYPES} from '../../constants/gestures';
 import {SCREENSHOT_INTERACTION_MODE} from '../../constants/screenshot';
 import {INSPECTOR_TABS} from '../../constants/session-inspector';
@@ -258,7 +257,7 @@ const Screenshot = (props) => {
               borderTop: '10px solid transparent',
               borderRight: '10px solid white',
               borderBottom: '10px solid transparent'}}></div>
-          <Input value={inputValue} ref={inputRef} onChange={(e) => setInputValue(e.target.value)} placeholder={t('Enter Keys to Send')} prefix={<SearchOutlined />} style={{width:'280px'}}/>
+          <Input value={inputValue} ref={inputRef} onChange={(e) => setInputValue(e.target.value)} placeholder={t('Enter Keys to Send')} style={{width:'280px'}}/>
         </Modal>
     </Spin>
   );
