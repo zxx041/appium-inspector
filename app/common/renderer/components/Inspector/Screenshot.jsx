@@ -171,7 +171,9 @@ const Screenshot = (props) => {
   };
 
   // If we're tapping or swiping, show the 'crosshair' cursor style
-  const screenshotStyle = {};
+  const screenshotStyle = {
+    width: '336px', height: '720px'
+  };
   if (screenshotInteractionMode === TAP_SWIPE || selectedTick) {
     screenshotStyle.cursor = 'crosshair';
   }
@@ -196,10 +198,7 @@ const Screenshot = (props) => {
               <p>{t('yCoordinate', {y})}</p>
             </div>
           )}
-          {screenImg}
-          {containerEl.current && (
-            <ScreenControl {...props} containerEl={containerEl.current} />
-          )}
+          {<ScreenControl {...props} containerEl={containerEl.current} />}
           {selectedInspectorTab === INSPECTOR_TABS.GESTURES && points && (
             <svg key="gestureSVG" className={styles.gestureSvg}>
               {points.map((pointer) =>

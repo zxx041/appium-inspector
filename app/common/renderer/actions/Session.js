@@ -619,7 +619,7 @@ export function newSession(caps, attachSessId = null) {
     // http://127.0.0.1:9100 -> http://host:9100
     console.log("appium server host:", host);
     console.log("mjpegScreenshotUrl before convert:", mjpegScreenshotUrl);
-    if(mjpegScreenshotUrl.startsWith('http://127.0.0.1')) {
+    if(mjpegScreenshotUrl && mjpegScreenshotUrl.startsWith('http://127.0.0.1')) {
       const mjpegScreenshotPort = mjpegScreenshotUrl.split(':').pop();
       mjpegScreenshotUrl = 'http://' + host + ':' + mjpegScreenshotPort;
     }

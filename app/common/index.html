@@ -4,9 +4,28 @@
     <meta charset="utf-8" />
     <title>Appium Inspector</title>
     <link rel="stylesheet" href="renderer/assets/stylesheets/main.less" />
+    <style>
+      .video-layer {
+        position: absolute;
+        z-index: 0;
+      }
+
+      .touch-layer {
+        position: absolute;
+        z-index: 1;
+      }
+
+      .video {
+        float: right;
+        max-height: 100%;
+        max-width: 100%;
+        background-color: #000000;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="renderer/index.jsx"></script>
+    <script type="text/javascript" src="public/bundle.js"></script>
   </body>
 </html>

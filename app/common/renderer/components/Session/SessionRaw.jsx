@@ -2,7 +2,7 @@ import {LinkOutlined} from '@ant-design/icons';
 import {Badge, Button, Spin, Tabs} from 'antd';
 import _ from 'lodash';
 import React, {useEffect} from 'react';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, createSearchParams} from 'react-router-dom';
 
 import {BUTTON} from '../../constants/antd-types';
 import {LINKS} from '../../constants/common';
@@ -58,7 +58,12 @@ const Session = (props) => {
 
   const loadNewSession = async (caps, attachSessId = null) => {
     if (await newSession(_.cloneDeep(caps), attachSessId)) {
-      navigate('/inspector', {replace: true});
+      navigate(
+        {
+          pathname: '/inspector',
+          replace: true
+        }
+        );
     }
   };
 

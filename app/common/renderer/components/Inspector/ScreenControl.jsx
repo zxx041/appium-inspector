@@ -1,5 +1,6 @@
 import styles from './Inspector.module.css';
 import React, {useRef, useState, useEffect} from 'react';
+import ReactDOM from 'react-dom';
 import {DEFAULT_SWIPE, DEFAULT_TAP, SCREENSHOT_INTERACTION_MODE} from '../../constants/screenshot';
 import {POINTER_TYPES} from '../../constants/gestures';
 import HighlighterRects from './HighlighterRects.jsx';
@@ -27,140 +28,87 @@ const ScreenControl = (props) => {
   } = props;
 
 
-  const [x, setX] = useState();
-  const [y, setY] = useState();
+  const containerRef = useRef(null);
 
-  const handleScreenshotClick = async () => {
-    console.log('screenshot click...');
-    const {tapTickCoordinates} = props;
-    if (selectedTick) {
-      await tapTickCoordinates(x, y);
-    }
-  };
+  let touchCanvas = null;
+  useEffect(() => {
 
-  const handleScreenshotDown = async () => {
-    console.log('screenshot down .. ');
-    const {setCoordStart} = props;
-    // if (screenshotInteractionMode === TAP_SWIPE) {
-    await setCoordStart(x, y);
-    // }
-  };
+    const doIt = async () => {
+      if (containerRef.current && !containerRef.current.contains(window.__zcxWsScrcpy_video)) {
+        await window.__zcxWsScrcpy_init('action=stream&udid=988b5131374d45594a&player=mse&ws=ws%3A%2F%2Flocalhost%3A8000%2F%3Faction%3Dproxy-adb%26remote%3Dtcp%253A8886%26udid%3D988b5131374d45594a');
 
-  const handleScreenshotUp = async () => {
-    console.log('screenshot up..');
-    const {setCoordEnd, clearCoordAction} = props;
-    // if (screenshotInteractionMode === TAP_SWIPE) {
-    await setCoordEnd(x, y);
-    if (Math.abs(coordStart.x - x) < 5 && Math.abs(coordStart.y - y) < 5) {
-      await handleDoTap({x, y}); // Pass coordEnd because otherwise it is not retrieved
-    } else {
-      await handleDoSwipe({x, y}); // Pass coordEnd because otherwise it is not retrieved
-    }
-    clearCoordAction();
-    // }
-  };
+        containerRef.current.appendChild(window.__zcxWsScrcpy_video);
 
-  const handleMouseMove = (e) => { // 这里修改为相对于screen容器的坐标.而非相对于触发这个事件元素的坐标，以同时使用操控和录制
-    // e.stopPropagation();
-    const nativeEvent = e.nativeEvent;
-    const rect=  containerEl.getBoundingClientRect();
+        setTimeout(() => {
+          let canvasRect = window.__zcxWsScrcpy_video.getBoundingClientRect();
+          window.__zcxWsScrcpy_canvasRect = canvasRect;
+          console.log("animation ....");
+        }, 3000);
 
-    // const offsetX = e.nativeEvent.offsetX;
-    // const offsetY = e.nativeEvent.offsetY;
+        touchCanvas = document.getElementById('__zcxWsScrcpy_touchCanvasId');
 
-    const offsetX = nativeEvent.clientX - rect.left;
-    const offsetY = nativeEvent.clientY - rect.top;
-
-    const newX = offsetX * scaleRatio;
-    const newY = offsetY * scaleRatio;
-    setX(Math.round(newX));
-    setY(Math.round(newY));
-    // console.log(' mouse move ... ', x, y, e.target);
-
-  };
-
-  const handleDoTap = async (tapLocal) => {
-    const {POINTER_NAME, DURATION_1, DURATION_2, BUTTON} = DEFAULT_TAP;
-    await applyClientMethod({
-      methodName: TAP,
-      args: [
-        {
-          [POINTER_NAME]: [
-            {type: POINTER_MOVE, duration: DURATION_1, x: tapLocal.x, y: tapLocal.y},
-            {type: POINTER_DOWN, button: BUTTON},
-            {type: PAUSE, duration: DURATION_2},
-            {type: POINTER_UP, button: BUTTON}
-          ]
-        }
-      ]
-    });
-  };
-
-  const handleDoSwipe = async (swipeEndLocal) => {
-    const {POINTER_NAME, DURATION_1, DURATION_2, BUTTON, ORIGIN} = DEFAULT_SWIPE;
-    await applyClientMethod({
-      methodName: SWIPE,
-      args: {
-        [POINTER_NAME]: [
-          {type: POINTER_MOVE, duration: DURATION_1, x: coordStart.x, y: coordStart.y},
-          {type: POINTER_DOWN, button: BUTTON},
-          {
-            type: POINTER_MOVE,
-            duration: DURATION_2,
-            origin: ORIGIN,
-            x: swipeEndLocal.x,
-            y: swipeEndLocal.y
-          },
-          {type: POINTER_UP, button: BUTTON}
-        ]
       }
-    });
-  };
+    };
+    doIt();
+  }, []);
+
+  // let generateEvent = (e, type) => {
+  //   e = e.nativeEvent;
+  //
+  //     const event = new MouseEvent(type, {
+  //       bubbles: true,
+  //       clientX: e.clientX,
+  //       clientY: e.clientY
+  //     });
+  //     event.__zcxWsScrcpy_fakeMEvent = true;
+  //     event.__zcxWsScrcpy_fakeMEvent_target = touchCanvas;
+  //     return event;
+  // };
+  //
+  // const handleMouseMove = (e) => {
+  //   if (touchCanvas) {
+  //     const event = generateEvent(e, 'mousemove');
+  //     touchCanvas.dispatchEvent(event);
+  //   }
+  // };
+  //
+  // const handleMouseDown = (e) => {
+  //   console.log('mouse down...', e.clientX, e.clientY);
+  //   if (touchCanvas) {
+  //     const event = generateEvent(e, 'mousedown');
+  //     touchCanvas.dispatchEvent(event);
+  //   }
+  // };
+  //
+  // const handleMouseUp = (e) => {
+  //   if (touchCanvas) {
+  //     const event = generateEvent(e, 'mouseup');
+  //     touchCanvas.dispatchEvent(event);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (isScriptLoaded && window.root) {
+  //     ReactDOM.render(<A />, window.root);
+  //   }
+  // }, [isScriptLoaded]);
 
   return (
-    <div
-      onMouseDown={handleScreenshotDown}
-      onMouseUp={handleScreenshotUp}
-      onMouseMove={handleMouseMove}
-      onClick={handleScreenshotClick}
+    <div>
+      <div ref={containerRef}></div>
+      <div
+        // onMouseDown={handleMouseDown}
+        // onMouseUp={handleMouseUp}
+        // onMouseMove={handleMouseMove}
 
-      className={styles.containerForSwipe}
-    >
-
-      {/*<svg*/}
-      {/*  className={styles.swipeSvg}*/}
-
-      {/*  style={{*/}
-      {/*    // pointerEvents: 'none', // 透传*/}
-      {/*    background: 'transparent' // 透明*/}
-      {/*  }}*/}
-      {/*>*/}
-      {/*  {coordStart && (*/}
-      {/*    <circle cx={coordStart.x / scaleRatio} cy={coordStart.y / scaleRatio}/>*/}
-      {/*  )}*/}
-      {/*  {coordStart && !coordEnd && (*/}
-      {/*    <line*/}
-      {/*      x1={coordStart.x / scaleRatio}*/}
-      {/*      y1={coordStart.y / scaleRatio}*/}
-      {/*      x2={x / scaleRatio}*/}
-      {/*      y2={y / scaleRatio}*/}
-      {/*    />*/}
-      {/*  )}*/}
-      {/*  {coordStart && coordEnd && (*/}
-      {/*    <line*/}
-      {/*      x1={coordStart.x / scaleRatio}*/}
-      {/*      y1={coordStart.y / scaleRatio}*/}
-      {/*      x2={coordEnd.x / scaleRatio}*/}
-      {/*      y2={coordEnd.y / scaleRatio}*/}
-      {/*    />*/}
-      {/*  )}*/}
-      {/*</svg>*/}
-
-      { recordFlag && (
+        className={styles.containerForSwipe}
+      >
+        {recordFlag && (
           <HighlighterRects {...props} containerEl={containerEl}/>
         )
-      }
+        }
 
+      </div>
     </div>
   );
 };

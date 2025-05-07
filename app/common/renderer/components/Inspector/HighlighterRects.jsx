@@ -19,7 +19,7 @@ const HighlighterRects = (props) => {
     scaleRatio,
     showCentroids,
     isLocatorTestModalVisible,
-    isSiriCommandModalVisible,
+    isSiriCommandModalVisible
   } = props;
 
   const highlighterRects = [];
@@ -54,8 +54,8 @@ const HighlighterRects = (props) => {
             path: key,
             keyCode: key,
             container: null,
-            accessible: null,
-          },
+            accessible: null
+          }
         };
         elements = [...elements, element, ...updateOverlapsAngles(elementsByOverlap[key], key)];
       } else {
@@ -92,8 +92,8 @@ const HighlighterRects = (props) => {
         path: sourceJSON.path,
         keyCode: null,
         container: false,
-        accessible: sourceJSON.attributes ? sourceJSON.attributes.accessible : null,
-      },
+        accessible: sourceJSON.attributes ? sourceJSON.attributes.accessible : null
+      }
     };
     const coordinates = `${obj.properties.centerX},${obj.properties.centerY}`;
     obj.properties.container = isElementContainer(obj, elements);
@@ -169,18 +169,42 @@ const HighlighterRects = (props) => {
 
   // Displays element rectangles only
   const renderElements = (elements) => {
+    let oriW = 0, oriH = 0;
+    for (const elem of elements) {
+      if (elem.properties.width > oriW) {
+        oriW = elem.properties.width;
+      }
+      if (elem.properties.height > oriH) {
+        oriH = elem.properties.height;
+      }
+    }
+
     for (const elem of elements) {
       // only render elements with non-zero height and width
       if (!elem.properties.width || !elem.properties.height) {
         continue;
       }
+
+      // 这里进行缩放.
+      if (window.__zcxWsScrcpy_canvasRect) {
+        let rect = window.__zcxWsScrcpy_canvasRect;
+        let w = rect.width, h = rect.height;
+        let wScale = 1.0 * w / oriW, hScale = 1.0 * h / oriH;
+        elem.properties.width *= wScale;
+        elem.properties.height *= hScale;
+        elem.properties.left *= wScale;
+        elem.properties.top *= hScale;
+        elem.properties.centerX *= wScale;
+        elem.properties.centerY *= hScale;
+      }
+
       highlighterRects.push(
         <HighlighterRectForElem
           {...props}
           dimensions={elem.properties}
           element={elem.element}
           key={elem.properties.path}
-        />,
+        />
       );
     }
   };
@@ -195,7 +219,7 @@ const HighlighterRects = (props) => {
           elementProperties={elem.properties}
           element={elem.element}
           key={elem.properties.path}
-        />,
+        />
       );
     }
   };
@@ -204,7 +228,7 @@ const HighlighterRects = (props) => {
   const elements = getElements(sourceJSON);
 
   if (containerEl) {
-    screenshotEl = containerEl.querySelector('img');
+    screenshotEl = containerEl.querySelector('canvas');
     highlighterXOffset =
       screenshotEl.getBoundingClientRect().left - containerEl.getBoundingClientRect().left;
   }
@@ -219,7 +243,7 @@ const HighlighterRects = (props) => {
         scaleRatio={scaleRatio}
         key={`el.${location.x}.${location.y}.${size.width}.${size.height}`}
         xOffset={highlighterXOffset}
-      />,
+      />
     );
   }
 
