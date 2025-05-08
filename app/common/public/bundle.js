@@ -13022,7 +13022,9 @@ var StreamClientScrcpy = (function (_super) {
         deviceView.appendChild(moreBox);
         player.setParent(video);
         player.pause();
-        document.body.appendChild(deviceView);
+        if (window.__zcxWsScrcpy_DEBUG === true) {
+            document.body.appendChild(deviceView);
+        }
         if (fitToScreen) {
             var newBounds = this.getMaxSize();
             if (newBounds) {
@@ -15950,7 +15952,7 @@ var MsePlayer = (function (_super) {
         bitrate: 7340032,
         maxFps: 60,
         iFrameInterval: 10,
-        bounds: new Size_1.default(720, 720),
+        bounds: new Size_1.default(360, 780),
         sendFrameMeta: false,
     });
     MsePlayer.DEFAULT_FRAMES_PER_FRAGMENT = 1;
@@ -19906,7 +19908,7 @@ var tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.m
 __webpack_require__(/*! ../style/app.css */ "./src/style/app.css");
 var StreamClientScrcpy_1 = __webpack_require__(/*! ./googDevice/client/StreamClientScrcpy */ "./src/app/googDevice/client/StreamClientScrcpy.ts");
 var HostTracker_1 = __webpack_require__(/*! ./client/HostTracker */ "./src/app/client/HostTracker.ts");
-window.__zcxWsScrcpy_init = function (hash) {
+var mainProc = function (hash) {
     return tslib_1.__awaiter(this, void 0, void 0, function () {
         var parsedQuery, action, BroadwayPlayer, MsePlayer, TinyH264Player, WebCodecsPlayer, tools, ShellClient, DevtoolsClient, FileListingClient, DeviceTracker_1;
         return tslib_1.__generator(this, function (_a) {
@@ -19968,7 +19970,37 @@ window.__zcxWsScrcpy_init = function (hash) {
                     });
                     _a.label = 9;
                 case 9:
+                    console.log('hot tracker start');
                     HostTracker_1.HostTracker.start();
+                    return [2];
+            }
+        });
+    });
+};
+if (window.__zcxWsScrcpy_DEBUG === true) {
+    window.onload = function () {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            var hash;
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        hash = location.hash.replace(/^#!/, '');
+                        return [4, mainProc(hash)];
+                    case 1:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
+}
+window.__zcxWsScrcpy_init = function (hash) {
+    return tslib_1.__awaiter(this, void 0, void 0, function () {
+        return tslib_1.__generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4, mainProc(hash)];
+                case 1:
+                    _a.sent();
                     return [2];
             }
         });
