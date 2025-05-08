@@ -124,6 +124,7 @@ const INITIAL_STATE = {
   selectedInspectorTab: INSPECTOR_TABS.SOURCE,
   appMode: APP_MODE.NATIVE,
   mjpegScreenshotUrl: null,
+  udid: null,
   pendingCommand: null,
   findElementsExecutionTimes: [],
   isFindingElementsTimes: false,
@@ -323,6 +324,7 @@ export default function inspector(state = INITIAL_STATE, action) {
         automationName: automationName && automationName.toLowerCase(),
         appMode: action.mode,
         mjpegScreenshotUrl: action.mjpegScreenshotUrl,
+        udid: action.udid
       };
     }
 

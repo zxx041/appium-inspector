@@ -454,9 +454,9 @@ export function toggleShowBoilerplate() {
   };
 }
 
-export function setSessionDetails({driver, sessionDetails, mode, mjpegScreenshotUrl}) {
+export function setSessionDetails({driver, sessionDetails, mode, mjpegScreenshotUrl, udid}) {
   return (dispatch) => {
-    dispatch({type: SET_SESSION_DETAILS, driver, sessionDetails, mode, mjpegScreenshotUrl});
+    dispatch({type: SET_SESSION_DETAILS, driver, sessionDetails, mode, mjpegScreenshotUrl, udid});
   };
 }
 

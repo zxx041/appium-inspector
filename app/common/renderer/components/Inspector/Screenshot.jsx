@@ -172,7 +172,7 @@ const Screenshot = (props) => {
 
   // If we're tapping or swiping, show the 'crosshair' cursor style
   const screenshotStyle = {
-    width: '336px', height: '720px'
+    width: '360px', height: '780px'
   };
   if (screenshotInteractionMode === TAP_SWIPE || selectedTick) {
     screenshotStyle.cursor = 'crosshair';

@@ -82,6 +82,7 @@ const AUTO_START_URL_PARAM = '1'; // what should be passed in to ?autoStart= to 
 
 const MJPEG_CAP = 'mjpegScreenshotUrl';
 const MJPEG_PORT_CAP = 'mjpegServerPort';
+const UDID_CAP = 'udid';
 
 // Multiple requests sometimes send a new session request
 // after establishing a session.
@@ -611,6 +612,10 @@ export function newSession(caps, attachSessId = null) {
       driver.capabilities[MJPEG_PORT_CAP] ||
       null;
 
+    const udid =
+      driver.capabilities[UDID_CAP] || null;
+    // debugger
+
     // Build mjpegScreenshotUrl if mjpegServerPort in session capabilities
     if (!mjpegScreenshotUrl && mjpegScreenshotPort) {
       mjpegScreenshotUrl = `${https ? 'https' : 'http'}://${host}:${mjpegScreenshotPort}`;
@@ -640,6 +645,7 @@ export function newSession(caps, attachSessId = null) {
       },
       mode,
       mjpegScreenshotUrl,
+      udid
     });
     action(dispatch);
     return true;

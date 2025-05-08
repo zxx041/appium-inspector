@@ -10,20 +10,12 @@ const {TAP, SELECT, SWIPE, TAP_SWIPE} = SCREENSHOT_INTERACTION_MODE;
 
 const ScreenControl = (props) => {
   const {
-    screenshot,
-    mjpegScreenshotUrl,
-    methodCallInProgress,
-    screenshotInteractionMode,
-    coordStart,
-    coordEnd,
-    scaleRatio,
-    selectedTick,
-    selectedInspectorTab,
-    applyClientMethod,
+    udid,
     recordFlag,
     t,
     selectedElement,
     selectedElementId,
+    attachSessId,
     containerEl
   } = props;
 
@@ -36,7 +28,10 @@ const ScreenControl = (props) => {
     const doIt = async () => {
       if (containerRef.current && !containerRef.current.contains(window.__zcxWsScrcpy_video)) {
         // Todo.
-        await window.__zcxWsScrcpy_init('action=stream&udid=CVH7N15C29001503&player=mse&ws=ws%3A%2F%2Flocalhost%3A8000%2F%3Faction%3Dproxy-adb%26remote%3Dtcp%253A8886%26udid%3DCVH7N15C29001503');
+        console.log("attachSessionId.... ", attachSessId, 'udid: ', udid);
+        // debugger
+
+        await window.__zcxWsScrcpy_init(`action=stream&udid=${udid}&player=mse&ws=ws%3A%2F%2Flocalhost%3A8000%2F%3Faction%3Dproxy-adb%26remote%3Dtcp%253A8886%26udid%3D${udid}`);
 
         containerRef.current.appendChild(window.__zcxWsScrcpy_video);
 

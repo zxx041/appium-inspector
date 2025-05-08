@@ -45,6 +45,8 @@ const Session = (props) => {
 
   const navigate = useNavigate();
 
+  console.log("attachSessId: ", attachSessId);
+
   const isAttaching = tabKey === 'attach';
 
   const handleSelectServerTab = async (tab) => {
