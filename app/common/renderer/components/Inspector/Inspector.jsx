@@ -234,7 +234,7 @@ const Inspector = (props) => {
     }
 
     // 组件卸载时清除任务
-    return () => {
+    return () => { // Todo 停止任务标志
       if (loopRef.current) {
         loopRef.current = null;
       }
