@@ -212,11 +212,11 @@ const Inspector = (props) => {
     // 只在组件挂载时启动任务
     if (!loopRef.current) {
       loopRef.current = () => {
-        console.log('doUpdateRect ...');
+        // console.log('doUpdateRect ...');
         if (latestRecordFlag.current) {
-          console.log('try to call...');
+          // console.log('try to call...');
           applyClientMethodWithCallback({methodName: 'getPageSource',  skipScreenshot: true}, function() {
-            console.log('done ... ');
+            // console.log('done ... ');
             setTimeout(() => {
               loopRef.current();
             }, 10);
