@@ -14,7 +14,7 @@ import {
   domParser,
   findDOMNodeByPath,
   findJSONElementByPath,
-  xmlToJSON,
+  xmlToJSON
 } from '../utils/source-parsing';
 import {log} from '../utils/logger';
 import {showError} from './Session';
@@ -123,18 +123,18 @@ export const SET_GESTURE_UPLOAD_ERROR = 'SET_GESTURE_UPLOAD_ERROR';
 
 export const SET_ENTRY_TO_SELECT_EL = 'ENTRY_TO_SELECT_EL';
 
-export const SET_APP_SOURSE_FLAG = "SET_APP_SOURSE_FLAG";
+export const SET_APP_SOURSE_FLAG = 'SET_APP_SOURSE_FLAG';
 
 const KEEP_ALIVE_PING_INTERVAL = 20 * 1000;
 const NO_NEW_COMMAND_LIMIT = 24 * 60 * 60 * 1000; // Set timeout to 24 hours
 
 // A debounced function that calls findElement and gets info about the element
-const findElement = _.debounce(async function (strategyMap, dispatch, getState, path, fromWhere) {
+const findElement = _.debounce(async function(strategyMap, dispatch, getState, path, fromWhere) {
   for (let [strategy, selector] of strategyMap) {
     // Get the information about the element
     const action = callClientMethod({
       strategy,
-      selector,
+      selector
     });
     let {elementId} = await action(dispatch, getState);
 
@@ -159,8 +159,8 @@ const checkErrorsInAction = ({ticks}) => {
       errors.push(
         i18n.t('gestureInvalidEventError', {
           invalidEvent: tick.type,
-          validEvents: Object.values(POINTER_TYPES).join(', '),
-        }),
+          validEvents: Object.values(POINTER_TYPES).join(', ')
+        })
       );
     } else if (
       tick.type === POINTER_TYPES.POINTER_MOVE &&
@@ -169,8 +169,8 @@ const checkErrorsInAction = ({ticks}) => {
       errors.push(
         i18n.t('gestureRequiredFieldsError', {
           fields: 'duration, x and y',
-          eventType: tick.type,
-        }),
+          eventType: tick.type
+        })
       );
     } else if (
       [POINTER_TYPES.POINTER_DOWN, POINTER_TYPES.POINTER_UP].includes(tick.type) &&
@@ -179,15 +179,15 @@ const checkErrorsInAction = ({ticks}) => {
       errors.push(
         i18n.t('gestureRequiredFieldsError', {
           fields: 'button',
-          eventType: tick.type,
-        }),
+          eventType: tick.type
+        })
       );
     } else if (tick.type === POINTER_TYPES.PAUSE && typeof tick.duration === 'undefined') {
       errors.push(
         i18n.t('gestureRequiredFieldsError', {
           fields: 'duration',
-          eventType: tick.type,
-        }),
+          eventType: tick.type
+        })
       );
     }
   }
@@ -195,23 +195,23 @@ const checkErrorsInAction = ({ticks}) => {
 };
 
 /**
- * 
- * @param {*} path 
+ *
+ * @param {*} path
  * @param {*} fromWhere 从哪个入口进来
- * @param 
- * @returns 
+ * @param
+ * @returns
  */
 export function selectElement(path, fromWhere, position) {
   return async (dispatch, getState) => {
     dispatch({type: SET_ENTRY_TO_SELECT_EL, fromWhere});
-    const {sourceJSON, sourceXML, expandedPaths, currentContext, automationName,isSourceRefreshOn,methodCallInProgress,mjpegScreenshotUrl} =
+    const {sourceJSON, sourceXML, expandedPaths, currentContext, automationName, isSourceRefreshOn, methodCallInProgress, mjpegScreenshotUrl} =
       getState().inspector;
     const isNative = currentContext === NATIVE_APP;
     // Set the selected element in the source tree
     const selectedElement = findJSONElementByPath(path, sourceJSON);
-    selectedElement.position = position || {}
-    console.log("selectedElement::", selectedElement);
-    
+    selectedElement.position = position || {};
+    console.log('selectedElement::', selectedElement);
+
     dispatch({type: SELECT_ELEMENT, selectedElement});
 
     // Expand all of this element's ancestors so that it's visible in the source tree
@@ -232,24 +232,24 @@ export function selectElement(path, fromWhere, position) {
     dispatch({type: SET_OPTIMAL_LOCATORS, strategyMap});
 
     // fetch xpath and send click event to parent
-    if(fromWhere === ENTRY_TO_SELECT_EL.FROM_LEFT_SCREEN) {  
+    if (fromWhere === ENTRY_TO_SELECT_EL.FROM_LEFT_SCREEN) {
       let selectedElementTemp = {
         ...selectedElement,
-        strategyMap: strategyMap,
+        strategyMap: strategyMap
       };
       const xpathArr = strategyMap.find(subArr => subArr[0] === 'xpath');
       const xpathVal = xpathArr[1];
-      if(xpathVal) {
+      if (xpathVal) {
         let msg = {
-          command: "click",
-          type: "xpath",
+          command: 'click',
+          type: 'xpath',
           value: xpathVal,
           selectedElement: selectedElementTemp,
           // 选择元素时，源码树是否正在刷新
-          sourceLoading:!!methodCallInProgress && mjpegScreenshotUrl && isSourceRefreshOn
-        }
-        console.log("uitest-record,click msg:", msg)
-        window.parent.postMessage(msg, "*");
+          sourceLoading: !!methodCallInProgress && mjpegScreenshotUrl && isSourceRefreshOn
+        };
+        console.log('uitest-record,click msg:', msg);
+        window.parent.postMessage(msg, '*');
       }
     }
 
@@ -315,6 +315,9 @@ export function applyClientMethod(params) {
       getState().inspector.isRecording;
     try {
       dispatch({type: METHOD_CALL_REQUESTED});
+      // if(true){
+      //   return;
+      // }
       const callAction = callClientMethod(params);
       const {
         contexts,
@@ -331,7 +334,7 @@ export function applyClientMethod(params) {
         variableName,
         variableIndex,
         strategy,
-        selector,
+        selector
       } = await callAction(dispatch, getState);
 
       // TODO: Implement recorder code for gestures
@@ -362,10 +365,92 @@ export function applyClientMethod(params) {
           currentContextError,
           sourceError,
           screenshotError,
-          windowSizeError,
+          windowSizeError
         });
       }
       window.dispatchEvent(new Event('resize'));
+      return commandRes;
+    } catch (error) {
+      log.error(error);
+      let methodName = params.methodName === 'click' ? 'tap' : params.methodName;
+      showError(error, {methodName, secs: 10});
+      dispatch({type: METHOD_CALL_DONE});
+    }
+  };
+}
+
+/**
+ * Requests a method call on appium
+ */
+export function applyClientMethodWithCallback(params, callback) {
+  return async (dispatch, getState) => {
+    const isRecording =
+      params.methodName !== 'quit' &&
+      params.methodName !== 'getPageSource' &&
+      params.methodName !== 'gesture' &&
+      params.methodName !== 'status' &&
+      getState().inspector.isRecording;
+    try {
+      dispatch({type: METHOD_CALL_REQUESTED});
+      // if(true){
+      //   return;
+      // }
+      const callAction = callClientMethod(params);
+      const {
+        contexts,
+        contextsError,
+        commandRes,
+        currentContext,
+        currentContextError,
+        source,
+        screenshot,
+        windowSize,
+        sourceError,
+        screenshotError,
+        windowSizeError,
+        variableName,
+        variableIndex,
+        strategy,
+        selector
+      } = await callAction(dispatch, getState);
+
+      // TODO: Implement recorder code for gestures
+      if (isRecording) {
+        // Add 'findAndAssign' line of code. Don't do it for arrays though. Arrays already have 'find' expression
+        if (strategy && selector && !variableIndex && variableIndex !== 0) {
+          const findAction = findAndAssign(strategy, selector, variableName, false);
+          findAction(dispatch, getState);
+        }
+
+        // now record the actual action
+        let args = [variableName, variableIndex];
+        args = args.concat(params.args || []);
+        dispatch({type: RECORD_ACTION, action: params.methodName, params: args});
+      }
+      dispatch({type: METHOD_CALL_DONE});
+
+      if (source) {
+        dispatch({
+          type: SET_SOURCE_AND_SCREENSHOT,
+          contexts,
+          currentContext,
+          sourceJSON: xmlToJSON(source),
+          sourceXML: source,
+          screenshot,
+          windowSize,
+          contextsError,
+          currentContextError,
+          sourceError,
+          screenshotError,
+          windowSizeError
+        });
+      }
+      window.dispatchEvent(new Event('resize'));
+
+      // 请求完成
+      if (callback) {
+        callback();
+      }
       return commandRes;
     } catch (error) {
       log.error(error);
@@ -467,7 +552,7 @@ export function storeSessionSettings(updatedSessionSettings = null) {
       const action = applyClientMethod({
         methodName: 'getSettings',
         skipRefresh: true,
-        ignoreResult: true,
+        ignoreResult: true
       });
       sessionSettings = await action(dispatch, getState);
     }
@@ -560,7 +645,7 @@ export function getFindElementsTimes(findDataSource) {
 
       dispatch({
         type: GET_FIND_ELEMENTS_TIMES_COMPLETED,
-        findElementsExecutionTimes: _.sortBy(findElementsExecutionTimes, ['time']),
+        findElementsExecutionTimes: _.sortBy(findElementsExecutionTimes, ['time'])
       });
     } catch (error) {
       dispatch({type: GET_FIND_ELEMENTS_TIMES_COMPLETED});
@@ -578,7 +663,7 @@ export function findAndAssign(strategy, selector, variableName, isArray) {
       dispatch({
         type: RECORD_ACTION,
         action: 'findAndAssign',
-        params: [strategy, selector, variableName, isArray],
+        params: [strategy, selector, variableName, isArray]
       });
       dispatch({type: ADD_ASSIGNED_VAR_CACHE, varName: variableName});
     }
@@ -596,15 +681,16 @@ export function setLocatorTestElement(elementId) {
           methodName: 'getRect',
           skipRefresh: true,
           skipRecord: true,
-          ignoreResult: true,
+          ignoreResult: true
         });
         const {commandRes} = await action(dispatch, getState);
         dispatch({
           type: SET_SEARCHED_FOR_ELEMENT_BOUNDS,
           location: {x: commandRes.x, y: commandRes.y},
-          size: {width: commandRes.width, height: commandRes.height},
+          size: {width: commandRes.width, height: commandRes.height}
         });
-      } catch (ign) {}
+      } catch (ign) {
+      }
     }
   };
 }
@@ -625,7 +711,7 @@ export function selectLocatedElement(sourceJSON, sourceXML, bounds, id) {
     if (sourceJSON.children[0].attributes.bounds) {
       const [endX, endY] = [
         bounds.location.x + bounds.size.width,
-        bounds.location.y + bounds.size.height,
+        bounds.location.y + bounds.size.height
       ];
       const coords = `[${bounds.location.x},${bounds.location.y}][${endX},${endY}]`;
       return findPathsFromCoords(sourceJSON.children, coords);
@@ -634,7 +720,7 @@ export function selectLocatedElement(sourceJSON, sourceXML, bounds, id) {
         x: String(bounds.location.x),
         y: String(bounds.location.y),
         height: String(bounds.size.height),
-        width: String(bounds.size.width),
+        width: String(bounds.size.width)
       };
       return findPathsFromBounds(sourceJSON.children, combinedBounds);
     }
@@ -762,7 +848,7 @@ export function toggleShowCentroids() {
   };
 }
 
-export function toggleRecordFlag(){
+export function toggleRecordFlag() {
   return (dispatch, getState) => {
     const {recordFlag} = getState().inspector;
     const flag = !recordFlag;
@@ -777,7 +863,7 @@ export function getActiveAppId(isIOS, isAndroid) {
       if (isIOS) {
         const action = applyClientMethod({
           methodName: 'executeScript',
-          args: ['mobile:activeAppInfo', []],
+          args: ['mobile:activeAppInfo', []]
         });
         const {bundleId} = await action(dispatch, getState);
         dispatch({type: SET_APP_ID, appId: bundleId});
@@ -869,7 +955,8 @@ export function runKeepAliveLoop() {
       log.info('Pinging Appium server to keep session active');
       try {
         await driver.getTimeouts(); // Pings the Appium server to keep it alive
-      } catch (ign) {}
+      } catch (ign) {
+      }
       const now = Date.now();
 
       // If the new command limit has been surpassed, prompt user if they want to keep session going
@@ -1133,7 +1220,7 @@ export function toggleShowAttributes() {
 }
 
 // 是否展示源码树
-export function setSourceTreeOpenFlag () {
+export function setSourceTreeOpenFlag() {
   return (dispatch) => {
     dispatch({type: SET_APP_SOURSE_FLAG});
   };

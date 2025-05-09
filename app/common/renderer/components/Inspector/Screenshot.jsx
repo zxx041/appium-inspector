@@ -184,7 +184,7 @@ const Screenshot = (props) => {
   // Show the screenshot and highlighter rects.
   // Show loading indicator if a method call is in progress, unless using MJPEG mode.
   return (
-    <Spin size="large" spinning={!!methodCallInProgress && !mjpegScreenshotUrl}>
+    <div>
       <div className={styles.innerScreenshotContainer}>
         <div
           ref={containerEl}
@@ -258,7 +258,7 @@ const Screenshot = (props) => {
               borderBottom: '10px solid transparent'}}></div>
           <Input value={inputValue} ref={inputRef} onChange={(e) => setInputValue(e.target.value)} placeholder={t('Enter Keys to Send')} style={{width:'280px'}}/>
         </Modal>
-    </Spin>
+    </div>
   );
 };
 

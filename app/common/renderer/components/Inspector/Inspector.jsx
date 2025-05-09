@@ -10,7 +10,7 @@ import {
   PlusSquareOutlined,
   SelectOutlined,
   TagOutlined,
-  ThunderboltOutlined,
+  ThunderboltOutlined
 } from '@ant-design/icons';
 import {Button, Card, Modal, Space, Spin, Switch, Tabs, Tooltip} from 'antd';
 import {debounce} from 'lodash';
@@ -22,7 +22,7 @@ import {WINDOW_DIMENSIONS} from '../../constants/common';
 import {
   INSPECTOR_TABS,
   MJPEG_STREAM_CHECK_INTERVAL,
-  SESSION_EXPIRY_PROMPT_TIMEOUT,
+  SESSION_EXPIRY_PROMPT_TIMEOUT
 } from '../../constants/session-inspector';
 import {SCREENSHOT_INTERACTION_MODE} from '../../constants/screenshot';
 import {clipboard} from '../../polyfills';
@@ -37,6 +37,7 @@ import Screenshot from './Screenshot.jsx';
 import SelectedElement from './SelectedElement.jsx';
 import SessionInfo from './SessionInfo.jsx';
 import Source from './Source.jsx';
+import {applyClientMethod, applyClientMethodWithCallback} from '../../actions/Inspector';
 
 const {SELECT, TAP_SWIPE} = SCREENSHOT_INTERACTION_MODE;
 
@@ -72,6 +73,7 @@ const Inspector = (props) => {
     isAwaitingMjpegStream,
     toggleShowCentroids,
     showCentroids,
+    applyClientMethodWithCallback,
     recordFlag,
     toggleRecordFlag,
     isGestureEditorVisible,
@@ -79,7 +81,7 @@ const Inspector = (props) => {
     isSourceRefreshOn,
     windowSize,
     t,
-    sourceTreeOpenFlag,
+    sourceTreeOpenFlag
   } = props;
 
   const didInitialResize = useRef(false);
@@ -143,7 +145,8 @@ const Inspector = (props) => {
     try {
       await img.decode();
       imgReady = true;
-    } catch (ign) {}
+    } catch (ign) {
+    }
     if (imgReady && isAwaitingMjpegStream) {
       setAwaitingMjpegStream(false);
       updateSourceTreeWidthDebounced();
@@ -172,7 +175,7 @@ const Inspector = (props) => {
       getSavedActionFramework,
       runKeepAliveLoop,
       setSessionTime,
-      storeSessionSettings,
+      storeSessionSettings
     } = props;
     const curHeight = window.innerHeight;
     const curWidth = window.innerWidth;
@@ -194,6 +197,50 @@ const Inspector = (props) => {
     setSessionTime(Date.now());
   }, []);
 
+  let doUpdateRect = undefined;
+
+  const loopRef = useRef(null); // 用于存储循环任务的引用
+
+  const latestRecordFlag = useRef(recordFlag); // 存储最新的 props 值
+
+  // 每次 someProp 变化时更新 ref
+  useEffect(() => {
+    latestRecordFlag.current = recordFlag;
+  }, [recordFlag]);
+
+  useEffect(() => {
+    // 只在组件挂载时启动任务
+    if (!loopRef.current) {
+      loopRef.current = () => {
+        console.log('doUpdateRect ...');
+        if (latestRecordFlag.current) {
+          console.log('try to call...');
+          applyClientMethodWithCallback({methodName: 'getPageSource',  skipScreenshot: true}, function() {
+            console.log('done ... ');
+            setTimeout(() => {
+              loopRef.current();
+            }, 10);
+          });
+        } else {
+          setTimeout(() => {
+            loopRef.current();
+          }, 1000); // 1秒后再通知完成.
+        }
+      };
+
+      setTimeout(() => {
+        loopRef.current();
+      });
+    }
+
+    // 组件卸载时清除任务
+    return () => {
+      if (loopRef.current) {
+        loopRef.current = null;
+      }
+    };
+  }, []); // 空依赖数组 [] 确保只运行一次
+
   /**
    * Ensures component dimensions are adjusted only once windowSize exists.
    * Cannot be combined with the other useEffect hook, since inside it,
@@ -207,7 +254,7 @@ const Inspector = (props) => {
       if (mjpegScreenshotUrl) {
         mjpegStreamCheckInterval.current = setInterval(
           checkMjpegStream,
-          MJPEG_STREAM_CHECK_INTERVAL,
+          MJPEG_STREAM_CHECK_INTERVAL
         );
       }
     }
@@ -254,8 +301,8 @@ const Inspector = (props) => {
           placement="topRight"
         >
           <Switch
-            checkedChildren={<CheckCircleOutlined />}
-            unCheckedChildren={<CloseCircleOutlined />}
+            checkedChildren={<CheckCircleOutlined/>}
+            unCheckedChildren={<CloseCircleOutlined/>}
             defaultChecked={false}
             onChange={() => toggleRecordFlag()}
           />
@@ -282,7 +329,7 @@ const Inspector = (props) => {
 
         {showScreenshot && !mjpegScreenshotUrl && (
           <Tooltip title={t('Download Screenshot')}>
-            <Button icon={<DownloadOutlined />} onClick={() => downloadScreenshot(screenshot)} />
+            <Button icon={<DownloadOutlined/>} onClick={() => downloadScreenshot(screenshot)}/>
           </Tooltip>
         )}
       </Space>
@@ -300,13 +347,12 @@ const Inspector = (props) => {
         ref={(el) => (screenshotEl.current = el)}
       >
         {/* {screenShotControls} */}
-        {showScreenshot && <Screenshot {...props} scaleRatio={scaleRatio} />}
-        {screenshotError && t('couldNotObtainScreenshot', {screenshotError})}
-        {!showScreenshot && (
-          <Spin size="large" spinning={true}>
-            <div className={InspectorStyles.screenshotBox} />
-          </Spin>
-        )}
+        {/*{showScreenshot && <Screenshot {...props} scaleRatio={scaleRatio}/>}*/}
+        {/*{screenshotError && t('couldNotObtainScreenshot', {screenshotError})}*/}
+        {/*{!showScreenshot && (*/}
+        {/*  <div className={InspectorStyles.screenshotBox}/>*/}
+        {/*)}*/}
+        <Screenshot {...props} scaleRatio={scaleRatio}/>
       </div>
       <div>
         <HeaderButtons quitCurrentSession={quitCurrentSession} {...props} />
@@ -324,21 +370,21 @@ const Inspector = (props) => {
               disabled: !showScreenshot,
               children: sourceTreeOpenFlag ?  // 是否展示源码树
                 (
-                <div className="action-row">
-                  <div className="action-col" >
-                    <Card
-                      title={
-                        <span>
-                          <FileTextOutlined /> {t('App Source')}{' '}
+                  <div className="action-row">
+                    <div className="action-col">
+                      <Card
+                        title={
+                          <span>
+                          <FileTextOutlined/> {t('App Source')}{' '}
                         </span>
-                      }
-                      extra={
-                        <span>
+                        }
+                        extra={
+                          <span>
                           <Tooltip title={t('Toggle Attributes')}>
                             <Button
                               type="text"
                               id="btnToggleAttrs"
-                              icon={<CodeOutlined />}
+                              icon={<CodeOutlined/>}
                               onClick={toggleShowAttributes}
                             />
                           </Tooltip>
@@ -346,7 +392,7 @@ const Inspector = (props) => {
                             <Button
                               type="text"
                               id="btnSourceXML"
-                              icon={<CopyOutlined />}
+                              icon={<CopyOutlined/>}
                               onClick={() => clipboard.writeText(sourceXML)}
                             />
                           </Tooltip>
@@ -354,55 +400,55 @@ const Inspector = (props) => {
                             <Button
                               type="text"
                               id="btnDownloadSourceXML"
-                              icon={<DownloadOutlined />}
+                              icon={<DownloadOutlined/>}
                               onClick={() => downloadXML(sourceXML)}
                             />
                           </Tooltip>
                         </span>
-                      }
+                        }
+                      >
+                        <Source {...props} />
+                      </Card>
+                    </div>
+                    <div
+                      id="selectedElementContainer"
+                      className={`${InspectorStyles['interaction-tab-container']} ${InspectorStyles['element-detail-container']} action-col`}
                     >
-                      <Source {...props} />
-                    </Card>
-                  </div>
-                  <div
-                    id="selectedElementContainer"
-                    className={`${InspectorStyles['interaction-tab-container']} ${InspectorStyles['element-detail-container']} action-col`}
-                  >
-                    <Card
-                      title={
-                        <span>
-                          <TagOutlined /> {t('selectedElement')}
+                      <Card
+                        title={
+                          <span>
+                          <TagOutlined/> {t('selectedElement')}
                         </span>
-                      }
-                      className={InspectorStyles['selected-element-card']}
-                    >
-                      {selectedElement.path && <SelectedElement {...props} />}
-                      {!selectedElement.path && <i>{t('selectElementInSource')}</i>}
-                    </Card>
+                        }
+                        className={InspectorStyles['selected-element-card']}
+                      >
+                        {selectedElement.path && <SelectedElement {...props} />}
+                        {!selectedElement.path && <i>{t('selectElementInSource')}</i>}
+                      </Card>
+                    </div>
                   </div>
-                </div>
-              ) : 
-              ( // 只有选定元素 这部分
-                <div className="action-row">
-                  <div
-                    id="selectedElementContainer"
-                    className={`${InspectorStyles['interaction-tab-container']} ${InspectorStyles['element-detail-container']} action-col`}
-                    style={{maxWidth:'100%',padding:'0'}}
-                  >
-                    <Card
-                      title={
-                        <span>
-                          <TagOutlined /> {t('selectedElement')}
+                ) :
+                ( // 只有选定元素 这部分
+                  <div className="action-row">
+                    <div
+                      id="selectedElementContainer"
+                      className={`${InspectorStyles['interaction-tab-container']} ${InspectorStyles['element-detail-container']} action-col`}
+                      style={{maxWidth: '100%', padding: '0'}}
+                    >
+                      <Card
+                        title={
+                          <span>
+                          <TagOutlined/> {t('selectedElement')}
                         </span>
-                      }
-                      className={InspectorStyles['selected-element-card']}
-                    >
-                      {selectedElement.path && <SelectedElement {...props} />}
-                      {!selectedElement.path && <i>{t('selectElementInSource')}</i>}
-                    </Card>
+                        }
+                        className={InspectorStyles['selected-element-card']}
+                      >
+                        {selectedElement.path && <SelectedElement {...props} />}
+                        {!selectedElement.path && <i>{t('selectElementInSource')}</i>}
+                      </Card>
+                    </div>
                   </div>
-                </div>
-              ),
+                )
             },
             {
               label: t('Commands'),
@@ -412,14 +458,14 @@ const Inspector = (props) => {
                 <Card
                   title={
                     <span>
-                      <ThunderboltOutlined /> {t('Execute Commands')}
+                      <ThunderboltOutlined/> {t('Execute Commands')}
                     </span>
                   }
                   className={InspectorStyles['interaction-tab-card']}
                 >
                   <Commands {...props} />
                 </Card>
-              ),
+              )
             },
             {
               label: t('Gestures'),
@@ -429,7 +475,7 @@ const Inspector = (props) => {
                 <Card
                   title={
                     <span>
-                      <HighlightOutlined /> {t('Gesture Builder')}
+                      <HighlightOutlined/> {t('Gesture Builder')}
                     </span>
                   }
                   className={InspectorStyles['interaction-tab-card']}
@@ -440,20 +486,20 @@ const Inspector = (props) => {
                 <Card
                   title={
                     <span>
-                      <HighlightOutlined /> {t('Saved Gestures')}
+                      <HighlightOutlined/> {t('Saved Gestures')}
                     </span>
                   }
                   className={InspectorStyles['interaction-tab-card']}
                 >
                   <SavedGestures {...props} />
                 </Card>
-              ),
+              )
             },
             {
               label: t('Recorder'),
               key: INSPECTOR_TABS.RECORDER,
               disabled: !showScreenshot,
-              children: <Recorder {...props} />,
+              children: <Recorder {...props} />
             },
             {
               label: t('Session Information'),
@@ -463,15 +509,15 @@ const Inspector = (props) => {
                 <Card
                   title={
                     <span>
-                      <InfoCircleOutlined /> {t('Session Information')}
+                      <InfoCircleOutlined/> {t('Session Information')}
                     </span>
                   }
                   className={InspectorStyles['interaction-tab-card']}
                 >
                   <SessionInfo {...props} />
                 </Card>
-              ),
-            },
+              )
+            }
           ]}
         />
       </div>
@@ -480,7 +526,7 @@ const Inspector = (props) => {
 
   return (
     <div className={InspectorStyles['inspector-container']}>
-     
+
       {main}
       <Modal
         title={t('Session Inactive')}
