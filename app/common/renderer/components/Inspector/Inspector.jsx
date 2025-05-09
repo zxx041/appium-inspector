@@ -309,7 +309,7 @@ const Inspector = (props) => {
         )}
       </div>
       <div>
-      <HeaderButtons quitCurrentSession={quitCurrentSession} {...props} />
+        <HeaderButtons quitCurrentSession={quitCurrentSession} {...props} />
       </div>
       <div id="sourceTreeContainer" className={InspectorStyles['interaction-tab-container']}>
         <Tabs
@@ -322,7 +322,8 @@ const Inspector = (props) => {
               label: t('Source'),
               key: INSPECTOR_TABS.SOURCE,
               disabled: !showScreenshot,
-              children: sourceTreeOpenFlag?(
+              children: sourceTreeOpenFlag ?  // 是否展示源码树
+                (
                 <div className="action-row">
                   <div className="action-col" >
                     <Card
@@ -380,7 +381,8 @@ const Inspector = (props) => {
                     </Card>
                   </div>
                 </div>
-              ):(
+              ) : 
+              ( // 只有选定元素 这部分
                 <div className="action-row">
                   <div
                     id="selectedElementContainer"
