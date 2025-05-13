@@ -10,7 +10,8 @@ import {
   SearchOutlined,
   VideoCameraOutlined,
   EyeOutlined,
-  EyeInvisibleOutlined
+  EyeInvisibleOutlined,
+  PoweroffOutlined,
 } from '@ant-design/icons';
 import {Button, Select, Space, Tooltip} from 'antd';
 import React, {useState, useEffect} from 'react';
@@ -95,6 +96,13 @@ const HeaderButtons = (props) => {
       )}
       {driver && driver.client.isAndroid && (
         <>
+          <Tooltip title={t('Press Power Button')} placement="right">
+            <Button
+              id="btnPressPowerButton"
+              icon={<PoweroffOutlined className={InspectorStyles['custom-button-icon']} />}
+              onClick={() => applyClientMethod({methodName: 'executeScript', args: ['mobile: shell', [{command: 'input', args: ['keyevent', '26']}]]})}
+            />
+          </Tooltip>
           <Tooltip title={t('Press Back Button')} placement="right">
             <Button
               id="btnPressHomeButton"
