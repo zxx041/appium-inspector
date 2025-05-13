@@ -16,9 +16,9 @@ const ScreenControl = (props) => {
     selectedElement,
     selectedElementId,
     attachSessId,
-    containerEl
+    containerEl,
+    sessionDetails
   } = props;
-
 
   const containerRef = useRef(null);
 
@@ -30,8 +30,11 @@ const ScreenControl = (props) => {
         // Todo.
         console.log("attachSessionId.... ", attachSessId, 'udid: ', udid);
         // debugger
-
-        await window.__zcxWsScrcpy_init(`action=stream&udid=${udid}&player=mse&ws=ws%3A%2F%2Flocalhost%3A8000%2F%3Faction%3Dproxy-adb%26remote%3Dtcp%253A8886%26udid%3D${udid}`);
+        // console.log("sessionDetails:", sessionDetails);
+        const host = sessionDetails.host;
+        console.log("remote host:", host);
+        // await window.__zcxWsScrcpy_init(`action=stream&udid=${udid}&player=mse&ws=ws%3A%2F%2Flocalhost%3A8000%2F%3Faction%3Dproxy-adb%26remote%3Dtcp%253A8886%26udid%3D${udid}`);
+        await window.__zcxWsScrcpy_init(`action=stream&udid=${udid}&player=mse&ws=ws%3A%2F%2F${host}%3A8000%2F%3Faction%3Dproxy-adb%26remote%3Dtcp%253A8886%26udid%3D${udid}`);
 
         containerRef.current.appendChild(window.__zcxWsScrcpy_video);
 
