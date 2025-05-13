@@ -250,9 +250,10 @@ const HeaderButtons = (props) => {
     // className={InspectorStyles['inspector-toolbar']}
     <div style={{height: '100%', display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'space-between'}}>
+                justifyContent: 'space-between', 
+                paddingLeft: '1em'}}>
       {/* <Space size="middle"> */}
-        <div style={{marginLeft: '1em'}}>
+        <div style={{marginLeft: '4em'}}>
           {deviceControls}
           {/* {appModeControls} */}
           {generalControls}
@@ -260,12 +261,12 @@ const HeaderButtons = (props) => {
         </div>
 
         <div>
-          <Button.Group style={{marginLeft:'1em'}}>
+          <Button.Group style={{marginLeft:'4em'}}>
             {!sourceTreeOpenFlag
             && (
             <Tooltip title={t('Look App Source')} placement="right">
               <Button
-                id="btnStartRefreshing"
+                id="btnOpenSourceTree"
                 icon={<EyeOutlined />}
                 onClick={setSourceTreeOpenFlag}
               />
@@ -275,7 +276,7 @@ const HeaderButtons = (props) => {
             && (
             <Tooltip title={t('NotLook App Source')} placement="right">
               <Button
-                id="btnStartRefreshing"
+                id="btnOpenSourceTree"
                 icon={<EyeInvisibleOutlined />}
                 onClick={setSourceTreeOpenFlag}
               />
