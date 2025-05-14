@@ -25,7 +25,7 @@ const Screenshot = (props) => {
     scaleRatio,
     selectedTick,
     selectedInspectorTab,
-    applyClientMethod,
+    applyClientMethod,  
     t,
     selectedElement,
     selectedElementId,
@@ -55,7 +55,13 @@ const Screenshot = (props) => {
         }else{
           setTop(selectedElement.position.top+(selectedElement.position.height/2)-60+12)  
         }       
-        setLeft(width+24)
+
+        // setLeft(width+24)
+        if(screenshotStyle) {
+          // 屏幕宽 + 12 px
+          setLeft(screenshotStyle.width + 12);
+        }
+
         if(selectedElement.position.top+selectedElement.position.height/2+60>height+12){
           setBottom(0) 
         }
@@ -169,10 +175,36 @@ const Screenshot = (props) => {
     });
   };
 
+  const [screenshotStyle, setScreenshotStyle] = useState({});
   // If we're tapping or swiping, show the 'crosshair' cursor style
-  const screenshotStyle = {
-    width: '360px', height: '780px'
+  // let screenshotStyle = {
+  //   // width: '360px', height: '780px'
+  // };
+
+  // 之前版本是写死长宽，这里改成动态变化
+  // useEffect(() => {
+  //   const img = containerEl.current.querySelector('#screenshotContainer canvas#__zcxWsScrcpy_touchCanvasId');
+  //   if (img) {
+  //     const imgRect = img.getBoundingClientRect();
+  //     console.log("imgRect:", imgRect.width, imgRect.height);
+  //     setScreenshotStyle({ width: imgRect.width, height: imgRect.height });
+  //   }
+  // }, [containerEl.current.querySelector('#screenshotContainer canvas#__zcxWsScrcpy_touchCanvasId')]);  
+
+  
+  // ScreenControl 渲染完成后 这里将执行
+  const handleScreenControlRendered = () => {
+    // 2s 后执行，否则 取不到正确的值
+    setTimeout(()=>{
+      const img = containerEl.current.querySelector('#screenshotContainer canvas#__zcxWsScrcpy_touchCanvasId');
+          if (img) {
+            const imgRect = img.getBoundingClientRect();
+            console.log("imgRect:", imgRect.width, imgRect.height);
+            setScreenshotStyle({ width: imgRect.width, height: imgRect.height });
+          }
+    }, 2000); 
   };
+
   if (screenshotInteractionMode === TAP_SWIPE || selectedTick) {
     screenshotStyle.cursor = 'crosshair';
   }
@@ -197,7 +229,7 @@ const Screenshot = (props) => {
               <p>{t('yCoordinate', {y})}</p>
             </div>
           )}
-          {<ScreenControl {...props} containerEl={containerEl.current} />}
+          {<ScreenControl {...props} containerEl={containerEl.current} onRender={handleScreenControlRendered}/>}
           {selectedInspectorTab === INSPECTOR_TABS.GESTURES && points && (
             <svg key="gestureSVG" className={styles.gestureSvg}>
               {points.map((pointer) =>
@@ -241,10 +273,10 @@ const Screenshot = (props) => {
           onOk={onSaveAsOk}
           width={320} 
           maskClosable={false}
-          style={{position:'absolute',top:top,left:left,bottom:bottom}}
+          style={{position:'absolute', top:`${top}px`, left:`${left}px`, bottom:`${bottom}px`}}
           className="my-custom-modal"
           footer={[
-            <Button key="back" onClick={onCancel}  size="small">
+            <Button key="back" onClick={onCancel} size="small">
               {t('Cancel')} 
             </Button>,
             <Button key="submit"  type="primary" onClick={onSaveAsOk}  size="small">

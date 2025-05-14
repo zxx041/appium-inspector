@@ -261,7 +261,7 @@ const HeaderButtons = (props) => {
                 justifyContent: 'space-between', 
                 paddingLeft: '1em'}}>
       {/* <Space size="middle"> */}
-        <div style={{marginLeft: '4em'}}>
+        <div>
           {deviceControls}
           {/* {appModeControls} */}
           {generalControls}
@@ -269,7 +269,7 @@ const HeaderButtons = (props) => {
         </div>
 
         <div>
-          <Button.Group style={{marginLeft:'4em'}}>
+          <Button.Group>
             {!sourceTreeOpenFlag
             && (
             <Tooltip title={t('Look App Source')} placement="right">

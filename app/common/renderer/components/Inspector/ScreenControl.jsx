@@ -17,7 +17,8 @@ const ScreenControl = (props) => {
     selectedElementId,
     attachSessId,
     containerEl,
-    sessionDetails
+    sessionDetails,
+    onRender,
   } = props;
 
   const containerRef = useRef(null);
@@ -48,7 +49,11 @@ const ScreenControl = (props) => {
 
       }
     };
-    doIt();
+    
+    doIt().then(()=>{
+      onRender?.(); // 通知父组件已渲染
+    });
+    
   }, []);
 
   // let generateEvent = (e, type) => {

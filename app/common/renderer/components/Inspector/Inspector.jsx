@@ -113,14 +113,16 @@ const Inspector = (props) => {
     }
 
     const screenshotBox = screenAndSourceEl.current.querySelector('#screenshotContainer');
-    const img = screenAndSourceEl.current.querySelector('#screenshotContainer img#screenshot');
-
+    // const img = screenAndSourceEl.current.querySelector('#screenshotContainer img#screenshot');
+    // 取 scrcpy 的 canvas 的 长宽
+    const img = screenAndSourceEl.current.querySelector('#screenshotContainer canvas#__zcxWsScrcpy_touchCanvasId');
     if (!img) {
       return;
     }
 
     const imgRect = img.getBoundingClientRect();
     const screenshotRect = screenshotBox.getBoundingClientRect();
+
     if (imgRect.height < screenshotRect.height) {
       // get the expected image width if the image would fill the screenshot box height
       const attemptedImgWidth = (screenshotRect.height / imgRect.height) * imgRect.width;
@@ -354,7 +356,7 @@ const Inspector = (props) => {
         {/*)}*/}
         <Screenshot {...props} scaleRatio={scaleRatio}/>
       </div>
-      <div>
+      <div style={{flexGrow: 0.1, flexShrink: 0, flexBasis: '25px', minWidth : '25px'}}>
         <HeaderButtons quitCurrentSession={quitCurrentSession} {...props} />
       </div>
       <div id="sourceTreeContainer" className={InspectorStyles['interaction-tab-container']}>
