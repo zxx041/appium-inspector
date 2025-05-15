@@ -12,6 +12,7 @@ import {
   EyeOutlined,
   EyeInvisibleOutlined,
   PoweroffOutlined,
+  SelectOutlined,
 } from '@ant-design/icons';
 import {Button, Select, Space, Tooltip} from 'antd';
 import React, {useState, useEffect} from 'react';
@@ -51,7 +52,8 @@ const HeaderButtons = (props) => {
     setContext,
     t,
     setSourceTreeOpenFlag,
-    sourceTreeOpenFlag
+    sourceTreeOpenFlag,
+    toggleOpenPositionFlag,
   } = props;
 
   const [count, setCount] = useState(0);
@@ -245,6 +247,13 @@ const HeaderButtons = (props) => {
           />
         </Tooltip>
       )}
+        <Tooltip title={t('Position Element')} placement="right">
+          <Button
+            id="btnPosition"
+            icon={<SelectOutlined />}
+            onClick={toggleOpenPositionFlag}
+          />
+        </Tooltip>
     </Button.Group>
   );
 

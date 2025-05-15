@@ -19,6 +19,7 @@ const ScreenControl = (props) => {
     containerEl,
     sessionDetails,
     onRender,
+    openPositionFlag,
   } = props;
 
   const containerRef = useRef(null);
@@ -110,6 +111,12 @@ const ScreenControl = (props) => {
         {recordFlag && (
           <HighlighterRects {...props} containerEl={containerEl}/>
         )
+        }
+        {/* 注意： 录制和定位是 互斥的  */}
+        {
+          openPositionFlag && (
+            <HighlighterRects {...props} containerEl={containerEl}/>
+          )
         }
 
       </div>

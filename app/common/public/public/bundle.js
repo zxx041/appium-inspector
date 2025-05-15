@@ -14215,13 +14215,16 @@ var FeaturedInteractionHandler = (function (_super) {
         var storage;
         if (event instanceof MouseEvent) {
             var fakeEvent = false;
-            if (event.target !== this.tag && this.tag.tagName === 'CANVAS' && window.__zcxWsScrcpy_canvasRect) {
-                var canvasRect = window.__zcxWsScrcpy_canvasRect;
-                if (event.clientX >= canvasRect.left && event.clientY >= canvasRect.top
-                    && event.clientX <= canvasRect.right && event.clientY <= canvasRect.bottom) {
-                    fakeEvent = true;
-                    event.__zcxWsScrcpy_fakeEvent = true;
-                    event.__zcxWsScrcpy_fakeEventTarget = this.tag;
+            var disableFakeEvent = window.__zcxWsScrcpy_disableFakeEvent;
+            if (disableFakeEvent == undefined || !disableFakeEvent) {
+                if (event.target !== this.tag && this.tag.tagName === 'CANVAS' && window.__zcxWsScrcpy_canvasRect) {
+                    var canvasRect = window.__zcxWsScrcpy_canvasRect;
+                    if (event.clientX >= canvasRect.left && event.clientY >= canvasRect.top
+                        && event.clientX <= canvasRect.right && event.clientY <= canvasRect.bottom) {
+                        fakeEvent = true;
+                        event.__zcxWsScrcpy_fakeEvent = true;
+                        event.__zcxWsScrcpy_fakeEventTarget = this.tag;
+                    }
                 }
             }
             if (event.target !== this.tag && fakeEvent !== true) {
@@ -15949,7 +15952,7 @@ var MsePlayer = (function (_super) {
     MsePlayer.playerCodeName = 'mse';
     MsePlayer.preferredVideoSettings = new VideoSettings_1.default({
         lockedVideoOrientation: -1,
-        bitrate: 7340032,
+        bitrate: 14680064,
         maxFps: 60,
         iFrameInterval: 10,
         bounds: new Size_1.default(360, 780),

@@ -67,6 +67,7 @@ import {
   SET_SHOW_BOILERPLATE,
   SET_SHOW_CENTROIDS,
   SET_RECORD_FLAG,
+  SET_OPEN_POSITION_FLAG,
   SET_SIRI_COMMAND_VALUE,
   SET_SOURCE_AND_SCREENSHOT,
   SET_USER_WAIT_TIMEOUT,
@@ -512,6 +513,12 @@ export default function inspector(state = INITIAL_STATE, action) {
         ...state,
         recordFlag: action.flag,
       };
+
+    case SET_OPEN_POSITION_FLAG:
+      return {
+        ...state,
+        openPositionFlag: action.flag,
+      };  
 
     case ENTERING_COMMAND_ARGS:
       return {

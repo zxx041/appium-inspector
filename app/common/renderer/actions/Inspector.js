@@ -42,6 +42,7 @@ export const SELECT_CENTROID = 'SELECT_CENTROID';
 export const UNSELECT_CENTROID = 'UNSELECT_CENTROID';
 export const SET_SHOW_CENTROIDS = 'SET_SHOW_CENTROIDS';
 export const SET_RECORD_FLAG = 'SET_RECORD_FLAG';
+export const SET_OPEN_POSITION_FLAG = 'SET_OPEN_POSITION_FLAG';
 
 export const QUIT_SESSION_REQUESTED = 'QUIT_SESSION_REQUESTED';
 export const QUIT_SESSION_DONE = 'QUIT_SESSION_DONE';
@@ -204,7 +205,9 @@ const checkErrorsInAction = ({ticks}) => {
 export function selectElement(path, fromWhere, position) {
   return async (dispatch, getState) => {
     dispatch({type: SET_ENTRY_TO_SELECT_EL, fromWhere});
-    const {sourceJSON, sourceXML, expandedPaths, currentContext, automationName, isSourceRefreshOn, methodCallInProgress, mjpegScreenshotUrl} =
+    const {sourceJSON, sourceXML, expandedPaths, currentContext, 
+      automationName, isSourceRefreshOn, methodCallInProgress, mjpegScreenshotUrl,
+      recordFlag} =
       getState().inspector;
     const isNative = currentContext === NATIVE_APP;
     // Set the selected element in the source tree
@@ -232,7 +235,8 @@ export function selectElement(path, fromWhere, position) {
     dispatch({type: SET_OPTIMAL_LOCATORS, strategyMap});
 
     // fetch xpath and send click event to parent
-    if (fromWhere === ENTRY_TO_SELECT_EL.FROM_LEFT_SCREEN) {
+    // 点击了屏幕 且 开启了录制 
+    if (fromWhere === ENTRY_TO_SELECT_EL.FROM_LEFT_SCREEN && recordFlag) {
       let selectedElementTemp = {
         ...selectedElement,
         strategyMap: strategyMap
@@ -849,10 +853,28 @@ export function toggleShowCentroids() {
 }
 
 export function toggleRecordFlag() {
+
+  // 不禁用控制
+  window.__zcxWsScrcpy_disableFakeEvent = false;
+
   return (dispatch, getState) => {
+    // 关闭定位按钮
+    dispatch({type: SET_OPEN_POSITION_FLAG, flag: false});
+
     const {recordFlag} = getState().inspector;
     const flag = !recordFlag;
     dispatch({type: SET_RECORD_FLAG, flag});
+  };
+}
+
+// 开启元素定位
+export function toggleOpenPositionFlag() {
+  // 禁用控制
+  window.__zcxWsScrcpy_disableFakeEvent = true;
+  
+  return (dispatch, getState) => {
+    dispatch({type: SET_RECORD_FLAG, flag: false});
+    dispatch({type: SET_OPEN_POSITION_FLAG, flag: true});
   };
 }
 

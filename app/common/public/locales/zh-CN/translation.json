@@ -298,5 +298,6 @@
   "gestureImportedFrom": "Gesture imported from '{{fileName}}'",
   "titleForModal": "请输入文本内容",
   "Look App Source":"查看应用源",
-  "NotLook App Source":"隐藏应用源"
+  "NotLook App Source":"隐藏应用源",
+  "Position Element":"选定元素"
 }
