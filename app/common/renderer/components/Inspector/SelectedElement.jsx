@@ -176,6 +176,48 @@ const SelectedElement = (props) => {
     tapIcon = <LoadingOutlined />;
   }
 
+  const handleAssert = (command) => {
+      const xpathArr = selectedElement.strategyMap.find(subArr => subArr[0] === 'xpath');
+      const xpathVal = xpathArr[1];
+      if (xpathVal) {
+        let msg = {
+          command: command,
+          type: "xpath",
+          value: xpathVal,
+          selectedElement,
+        }
+        console.log("handleAssert msg:", msg)
+        window.parent.postMessage(msg, "*")
+      }
+    };
+
+  // 生成点击事件处理函数
+  const handleAssertAttribute = () => {
+    handleAssert("assertAttribute");
+  };
+
+  const handleAssertText = () => {
+    handleAssert("assertText");
+  }
+
+  const handleAssertVisibility = () => {
+    handleAssert("assertVisibility");
+  }
+
+  const menus = (
+          <Menu>
+            <Menu.Item key="1" onClick={() => handleAssertAttribute()}>
+              生成属性断言
+            </Menu.Item>
+            <Menu.Item key="2" onClick={() => handleAssertText()}>
+              生成文本断言
+            </Menu.Item>
+            <Menu.Item key="3" onClick={() => handleAssertVisibility()}>
+              生成可见性断言
+            </Menu.Item>
+          </Menu>
+        );
+
   return (
     <Space className={styles.spaceContainer} direction="vertical" size="middle">
       {showSnapshotMaxDepthReachedMessage()}
@@ -244,6 +286,9 @@ const SelectedElement = (props) => {
             />
           </Tooltip>
         </Button.Group>
+        <Popover content={menus} placement="right">
+          <Button type="primary">生成断言</Button>
+        </Popover>
       </Row>
       {findDataSource.length > 0 && (
         <Row className={styles.selectedElemContentRow}>
