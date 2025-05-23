@@ -42,10 +42,23 @@ const Screenshot = (props) => {
 
   // 使用 useEffect 监听 selectedElement.attributes.focused 的变化
   useEffect(() => {
+    
+    const clickable = selectedElement && selectedElement.attributes && selectedElement.attributes.clickable;
     const focused = selectedElement && selectedElement.attributes && selectedElement.attributes.focused;
+    const focusable = selectedElement && selectedElement.attributes && selectedElement.attributes.focusable;
+    const enabled = selectedElement && selectedElement.attributes && selectedElement.attributes.enabled;
+
+    const cls = selectedElement && selectedElement.attributes && selectedElement.attributes.class;
+    
+
     const positionTop = selectedElement && selectedElement.position && selectedElement.position.top;
     
-    if(focused==='true' && fromWhere === ENTRY_TO_SELECT_EL.FROM_LEFT_SCREEN && positionTop) {
+    // 满足这几个条件的就认为是 输入框
+    // enabled === 'true' && focusable === 'true' && 
+    // clickable === 'true' && cls === 'android.widget.EditText'
+    if(enabled === 'true' && focusable === 'true' && clickable === 'true' 
+      && cls === 'android.widget.EditText'
+      && fromWhere === ENTRY_TO_SELECT_EL.FROM_LEFT_SCREEN && positionTop) {
       const element = document.querySelector('.ant-spin-container')
       
       if (element) { 

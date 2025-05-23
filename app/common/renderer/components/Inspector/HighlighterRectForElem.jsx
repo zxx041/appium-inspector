@@ -73,14 +73,14 @@ const HighlighterRectForElem = (props) => {
 
   const renderElements = async() => {
     // debugger
-    console.log('selectedElementselectedElement',selectedElement);
+    console.log('selectedElementselectedElement', selectedElement);
     
-    if(key === selectedElement.path){
-      unselectElement() 
-    }else{
-      selectElement(key, ENTRY_TO_SELECT_EL.FROM_LEFT_SCREEN,{left: left, top: top , width: width , height: height })
-    }
-
+    // if(key === selectedElement.path){
+    //   unselectElement() 
+    // }else{
+    //   selectElement(key, ENTRY_TO_SELECT_EL.FROM_LEFT_SCREEN,{left: left, top: top , width: width , height: height })
+    // }
+    selectElement(key, ENTRY_TO_SELECT_EL.FROM_LEFT_SCREEN,{left: left, top: top , width: width , height: height }) 
   }
 
   return (
