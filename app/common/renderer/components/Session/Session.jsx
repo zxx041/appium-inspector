@@ -79,13 +79,13 @@ const Session = (props) => {
       // 确保消息来源是可信的
       // if (event.origin === window.location.origin) {
       // }
-      const {sessionId, hostname, port} = event.data;
+      const {sessionId, hostname, port, scrcpyHost, scrcpyPort} = event.data;
 
       // 设置 主机名 和 端口
       if(hostname && port) {
         console.log("inspecor:msg from outer html,", "hostname:", hostname, "port:", port);
         (async () => {
-          await setLocalServerParams1(hostname, port);
+          await setLocalServerParams1(hostname, port, scrcpyHost, scrcpyPort);
         })();
       }
 

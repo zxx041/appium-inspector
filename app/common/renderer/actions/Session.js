@@ -234,7 +234,7 @@ export function newSession(caps, attachSessId = null) {
     dispatch({type: NEW_SESSION_REQUESTED, caps});
 
     let desiredCapabilities = caps ? getCapsObject(caps) : {};
-    let host, port, username, accessKey, https, path, token;
+    let host, port, username, accessKey, https, path, token, scrcpyHost, scrcpyPort;
     desiredCapabilities = addCustomCaps(desiredCapabilities);
 
     switch (session.serverType) {
@@ -253,6 +253,8 @@ export function newSession(caps, attachSessId = null) {
         port = session.server.remote.port;
         path = session.server.remote.path;
         https = session.server.remote.ssl;
+        scrcpyHost = session.server.remote.scrcpyHost;
+        scrcpyPort = session.server.remote.scrcpyPort;
         break;
       case SERVER_TYPES.SAUCE:
         path = '/wd/hub';
@@ -642,6 +644,8 @@ export function newSession(caps, attachSessId = null) {
         username,
         accessKey,
         https,
+        scrcpyHost,
+        scrcpyPort,
       },
       mode,
       mjpegScreenshotUrl,
@@ -836,7 +840,7 @@ export function setLocalServerParams() {
   };
 }
 
-export function setLocalServerParams1(hostname, port) {
+export function setLocalServerParams1(hostname, port, scrcpyHost, scrcpyPort) {
   return async (dispatch, getState) => {
     let serverArgs = await getSetting(SERVER_ARGS);
     // Get saved server args from settings and set local server settings to it. If there are no saved args, set local
@@ -848,11 +852,26 @@ export function setLocalServerParams1(hostname, port) {
         name: 'port',
         value: port,
       });
+
       dispatch({
         type: SET_SERVER_PARAM,
         serverType: SERVER_TYPES.REMOTE,
         name: 'hostname',
         value: hostname,
+      });
+
+      dispatch({
+        type: SET_SERVER_PARAM,
+        serverType: SERVER_TYPES.REMOTE,
+        name: 'scrcpyHost',
+        value: scrcpyHost,
+      });
+
+      dispatch({
+        type: SET_SERVER_PARAM,
+        serverType: SERVER_TYPES.REMOTE,
+        name: 'scrcpyPort',
+        value: scrcpyPort,
       });
   };
 }
