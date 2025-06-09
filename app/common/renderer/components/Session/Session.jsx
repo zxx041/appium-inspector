@@ -229,7 +229,7 @@ const Session = (props) => {
               {t('startSession')}
             </Button>
           )} */}
-          {isAttaching && (
+          {(
             <Button
               type={BUTTON.PRIMARY}
               disabled={!attachSessId}

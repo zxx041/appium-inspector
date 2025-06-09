@@ -30,6 +30,7 @@ const Screenshot = (props) => {
     selectedElement,
     selectedElementId,
     fromWhere,
+    recordFlag,
   } = props;
 
   const [inputValue, setInputValue] = useState('');
@@ -58,49 +59,49 @@ const Screenshot = (props) => {
     // clickable === 'true' && cls === 'android.widget.EditText'
     if(enabled === 'true' && focusable === 'true' && clickable === 'true' 
       && cls === 'android.widget.EditText'
-      && fromWhere === ENTRY_TO_SELECT_EL.FROM_LEFT_SCREEN && positionTop) {
-      const element = document.querySelector('.ant-spin-container')
-      
-      if (element) { 
-        const { width, height } = element.getBoundingClientRect();
-        if(selectedElement.position.top+(selectedElement.position.height/2)<60){
-          setTop(0)  
-        }else{
-          setTop(selectedElement.position.top+(selectedElement.position.height/2)-60+12)  
-        }       
+      && fromWhere === ENTRY_TO_SELECT_EL.FROM_LEFT_SCREEN && positionTop && recordFlag) {
 
-        // setLeft(width+24)
-        if(screenshotStyle) {
-          // 屏幕宽 + 12 px
-          setLeft(screenshotStyle.width + 12);
+        const element = document.querySelector('.ant-spin-container')
+        
+        if (element) { 
+          const { width, height } = element.getBoundingClientRect();
+          if(selectedElement.position.top+(selectedElement.position.height/2)<60){
+            setTop(0)  
+          }else{
+            setTop(selectedElement.position.top+(selectedElement.position.height/2)-60+12)  
+          }       
+
+          // setLeft(width+24)
+          if(screenshotStyle) {
+            // 屏幕宽 + 12 px
+            setLeft(screenshotStyle.width + 12);
+          }
+
+          if(selectedElement.position.top+selectedElement.position.height/2+60>height+12){
+            setBottom(0) 
+          }
         }
 
-        if(selectedElement.position.top+selectedElement.position.height/2+60>height+12){
-          setBottom(0) 
-        }
-      }
+        setModalOpen(true);
+        // setTimeout(() => {
+        // const element2 = document.querySelector('.inspected-element-box')
+        // console.log('element2',element2);
 
-      setModalOpen(true);
-      // setTimeout(() => {
-      // const element2 = document.querySelector('.inspected-element-box')
-      // console.log('element2',element2);
+        // const element3 = document.querySelector('.my-custom-modal')
+        //   if(element3.clientHeight){
+        //     if(selectedElement.position.top+selectedElement.position.height/2<element3.clientHeight/2){
+        //       setTop(0)  
+        //     }else{
+        //       setTop(selectedElement.position.top+selectedElement.position.height/2-element3.clientHeight/2+12)  
+        //     }  
+        //     if(selectedElement.position.top+selectedElement.position.height/2+element3.clientHeight/2>height+12){
+        //       setBottom(0) 
+        //     }
+        //   }
+        // }, 800);
 
-      // const element3 = document.querySelector('.my-custom-modal')
-      //   if(element3.clientHeight){
-      //     if(selectedElement.position.top+selectedElement.position.height/2<element3.clientHeight/2){
-      //       setTop(0)  
-      //     }else{
-      //       setTop(selectedElement.position.top+selectedElement.position.height/2-element3.clientHeight/2+12)  
-      //     }  
-      //     if(selectedElement.position.top+selectedElement.position.height/2+element3.clientHeight/2>height+12){
-      //       setBottom(0) 
-      //     }
-      //   }
-      // }, 800);
-
-      
-    }
-    else {
+        
+    } else {
       setModalOpen(false);
     }
   }, [selectedElement]);  
