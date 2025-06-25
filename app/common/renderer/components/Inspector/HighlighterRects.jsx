@@ -190,6 +190,7 @@ const HighlighterRects = (props) => {
         let rect = window.__zcxWsScrcpy_canvasRect;
         let w = rect.width, h = rect.height;
         let wScale = 1.0 * w / oriW, hScale = 1.0 * h / oriH;
+        console.log("scale: wScale", wScale, "hScale", hScale, "scaleRatio", scaleRatio);
         elem.properties.width *= wScale;
         elem.properties.height *= hScale;
         elem.properties.left *= wScale;

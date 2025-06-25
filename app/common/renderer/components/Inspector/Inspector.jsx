@@ -99,7 +99,10 @@ const Inspector = (props) => {
 
   // Calculate the ratio for scaling items overlaid on the screenshot
   // (highlighter rectangles/circles, gestures, etc.)
-  const updateScaleRatio = (imgWidth) => setScaleRatio(windowSize.width / imgWidth);
+  const updateScaleRatio = (imgWidth) => {
+    setScaleRatio(windowSize.width / imgWidth);
+    console.log('set scaleRatio:', scaleRatio);
+  };
 
   const updateScaleRatioDebounced = debounce(updateScaleRatio, 500);
 

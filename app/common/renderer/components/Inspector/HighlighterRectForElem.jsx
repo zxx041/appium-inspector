@@ -40,7 +40,7 @@ const HighlighterRectForElem = (props) => {
   //     if(isNotAllowedOn) {
   //       setMouseNotAllowedClasses(false);
   //     }
-      
+
   //     // let index=''
   //     // highlighterClasses.forEach((i,ind)=>{
   //     //  if(i.indexOf('disabled-element-box')>-1){
@@ -68,19 +68,19 @@ const HighlighterRectForElem = (props) => {
   // if(!!methodCallInProgress && mjpegScreenshotUrl && isSourceRefreshOn) {
   //   highlighterClasses.push(InspectorCSS['disabled-element-box']);
   // }
-  
+
   // console.log("highlighterClasses:", highlighterClasses);
 
-  const renderElements = async() => {
+  const renderElements = () => {
     // debugger
-    console.log('selectedElementselectedElement', selectedElement);
-    
+    // console.log('selectedElementselectedElement', selectedElement);
+
     // if(key === selectedElement.path){
-    //   unselectElement() 
+    //   unselectElement()
     // }else{
     //   selectElement(key, ENTRY_TO_SELECT_EL.FROM_LEFT_SCREEN,{left: left, top: top , width: width , height: height })
     // }
-    selectElement(key, ENTRY_TO_SELECT_EL.FROM_LEFT_SCREEN,{left: left, top: top , width: width , height: height }) 
+    selectElement(key, ENTRY_TO_SELECT_EL.FROM_LEFT_SCREEN,{left: left, top: top , width: width , height: height })
   }
 
   return (

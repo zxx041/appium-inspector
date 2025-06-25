@@ -25,7 +25,7 @@ const Screenshot = (props) => {
     scaleRatio,
     selectedTick,
     selectedInspectorTab,
-    applyClientMethod,  
+    applyClientMethod,
     t,
     selectedElement,
     selectedElementId,
@@ -43,33 +43,36 @@ const Screenshot = (props) => {
 
   // 使用 useEffect 监听 selectedElement.attributes.focused 的变化
   useEffect(() => {
-    
+
     const clickable = selectedElement && selectedElement.attributes && selectedElement.attributes.clickable;
-    const focused = selectedElement && selectedElement.attributes && selectedElement.attributes.focused;
     const focusable = selectedElement && selectedElement.attributes && selectedElement.attributes.focusable;
+    const focused = selectedElement && selectedElement.attributes && selectedElement.attributes.focused;
     const enabled = selectedElement && selectedElement.attributes && selectedElement.attributes.enabled;
 
     const cls = selectedElement && selectedElement.attributes && selectedElement.attributes.class;
-    
+
 
     const positionTop = selectedElement && selectedElement.position && selectedElement.position.top;
-    
+
     // 满足这几个条件的就认为是 输入框
-    // enabled === 'true' && focusable === 'true' && 
+    // enabled === 'true' && focusable === 'true' &&
     // clickable === 'true' && cls === 'android.widget.EditText'
-    if(enabled === 'true' && focusable === 'true' && clickable === 'true' 
+    if(enabled === 'true'
+      && clickable === 'true'
+      && focusable === 'true'
+      // && focused === 'true'
       && cls === 'android.widget.EditText'
       && fromWhere === ENTRY_TO_SELECT_EL.FROM_LEFT_SCREEN && positionTop && recordFlag) {
 
         const element = document.querySelector('.ant-spin-container')
-        
-        if (element) { 
+
+        if (element) {
           const { width, height } = element.getBoundingClientRect();
           if(selectedElement.position.top+(selectedElement.position.height/2)<60){
-            setTop(0)  
+            setTop(0)
           }else{
-            setTop(selectedElement.position.top+(selectedElement.position.height/2)-60+12)  
-          }       
+            setTop(selectedElement.position.top+(selectedElement.position.height/2)-60+12)
+          }
 
           // setLeft(width+24)
           if(screenshotStyle) {
@@ -78,7 +81,7 @@ const Screenshot = (props) => {
           }
 
           if(selectedElement.position.top+selectedElement.position.height/2+60>height+12){
-            setBottom(0) 
+            setBottom(0)
           }
         }
 
@@ -90,37 +93,43 @@ const Screenshot = (props) => {
         // const element3 = document.querySelector('.my-custom-modal')
         //   if(element3.clientHeight){
         //     if(selectedElement.position.top+selectedElement.position.height/2<element3.clientHeight/2){
-        //       setTop(0)  
+        //       setTop(0)
         //     }else{
-        //       setTop(selectedElement.position.top+selectedElement.position.height/2-element3.clientHeight/2+12)  
-        //     }  
+        //       setTop(selectedElement.position.top+selectedElement.position.height/2-element3.clientHeight/2+12)
+        //     }
         //     if(selectedElement.position.top+selectedElement.position.height/2+element3.clientHeight/2>height+12){
-        //       setBottom(0) 
+        //       setBottom(0)
         //     }
         //   }
         // }, 800);
 
-        
+
     } else {
       setModalOpen(false);
     }
-  }, [selectedElement]);  
+  }, [selectedElement]);
 
   // modal save button
   const onSaveAsOk = () => {
     console.log("strategyMap", selectedElement.strategyMap);
     if (inputRef.current) {
-      // clear first 
+      // clear first
       applyClientMethod({
-        methodName: 'clear', 
+        methodName: 'clear',
         elementId: selectedElementId
       });
       // sendKeys to phone
       applyClientMethod({
-        methodName: 'sendKeys',
-        elementId: selectedElementId,
-        args: [inputValue || ''],
+        methodName: 'executeScript',
+        args: [
+          'mobile: type',
+          [{
+            text: inputValue || '',
+            elementId: selectedElementId
+          }]
+        ]
       });
+
 
       // send input event to parent
       const xpathArr = selectedElement.strategyMap.find(subArr => subArr[0] === 'xpath');
@@ -138,14 +147,14 @@ const Screenshot = (props) => {
       }
     }
     setInputValue('');
-    setModalOpen(false); 
+    setModalOpen(false);
   };
   // modal cancel button
   const onCancel = () => {
     setInputValue('');
-    setModalOpen(false); 
+    setModalOpen(false);
   };
-  // end 
+  // end
 
   const containerEl = useRef();
 
@@ -203,9 +212,9 @@ const Screenshot = (props) => {
   //     console.log("imgRect:", imgRect.width, imgRect.height);
   //     setScreenshotStyle({ width: imgRect.width, height: imgRect.height });
   //   }
-  // }, [containerEl.current.querySelector('#screenshotContainer canvas#__zcxWsScrcpy_touchCanvasId')]);  
+  // }, [containerEl.current.querySelector('#screenshotContainer canvas#__zcxWsScrcpy_touchCanvasId')]);
 
-  
+
   // ScreenControl 渲染完成后 这里将执行
   const handleScreenControlRendered = () => {
     // 2s 后执行，否则 取不到正确的值
@@ -216,7 +225,7 @@ const Screenshot = (props) => {
             console.log("imgRect:", imgRect.width, imgRect.height);
             setScreenshotStyle({ width: imgRect.width, height: imgRect.height });
           }
-    }, 2000); 
+    }, 2000);
   };
 
   if (screenshotInteractionMode === TAP_SWIPE || selectedTick) {
@@ -282,16 +291,16 @@ const Screenshot = (props) => {
           open={modalOpen}
           title={t('titleForModal')}
           okText={t('Send Keys')}
-          cancelText={t('Cancel')} 
+          cancelText={t('Cancel')}
           onCancel={onCancel}
           onOk={onSaveAsOk}
-          width={320} 
+          width={320}
           maskClosable={false}
           style={{position:'absolute', top:`${top}px`, left:`${left}px`, bottom:`${bottom}px`}}
           className="my-custom-modal"
           footer={[
             <Button key="back" onClick={onCancel} size="small">
-              {t('Cancel')} 
+              {t('Cancel')}
             </Button>,
             <Button key="submit"  type="primary" onClick={onSaveAsOk}  size="small">
               {t('Send Keys')}
