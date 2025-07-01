@@ -204,6 +204,10 @@ const SelectedElement = (props) => {
     handleAssert("assertVisibility");
   }
 
+  const handleAssertExist = () => {
+    handleAssert("assertExistStep");
+  }
+
   const menus = (
           <Menu>
             <Menu.Item key="1" onClick={() => handleAssertAttribute()}>
@@ -215,6 +219,10 @@ const SelectedElement = (props) => {
             <Menu.Item key="3" onClick={() => handleAssertVisibility()}>
               生成可见性断言
             </Menu.Item>
+            <Menu.Item key="3" onClick={() => handleAssertExist()}>
+              生成存在性断言
+            </Menu.Item>
+
           </Menu>
         );
 
