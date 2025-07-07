@@ -23,6 +23,7 @@ const Screenshot = (props) => {
     coordStart,
     coordEnd,
     scaleRatio,
+    heightScaleRatio,
     selectedTick,
     selectedInspectorTab,
     applyClientMethod,
@@ -252,6 +253,7 @@ const Screenshot = (props) => {
               <p>{t('yCoordinate', {y})}</p>
             </div>
           )}
+          {/*{screenImg}*/}
           {<ScreenControl {...props} containerEl={containerEl.current} onRender={handleScreenControlRendered}/>}
           {selectedInspectorTab === INSPECTOR_TABS.GESTURES && points && (
             <svg key="gestureSVG" className={styles.gestureSvg}>

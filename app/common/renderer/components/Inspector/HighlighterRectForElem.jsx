@@ -80,7 +80,7 @@ const HighlighterRectForElem = (props) => {
     // }else{
     //   selectElement(key, ENTRY_TO_SELECT_EL.FROM_LEFT_SCREEN,{left: left, top: top , width: width , height: height })
     // }
-    selectElement(key, ENTRY_TO_SELECT_EL.FROM_LEFT_SCREEN,{left: left, top: top , width: width , height: height })
+    selectElement(key, ENTRY_TO_SELECT_EL.FROM_LEFT_SCREEN, {left: left, top: top , width: width , height: height })
   }
 
   return (

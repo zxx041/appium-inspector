@@ -89,7 +89,10 @@ const Inspector = (props) => {
   const screenshotEl = useRef(null);
   const mjpegStreamCheckInterval = useRef(null);
 
+  // 默认关注宽度比例
   const [scaleRatio, setScaleRatio] = useState(1);
+  // screenshot 区域换成 ws-scrcpy 后，增加 高度比例
+  const [heightScaleRatio, setHeightScaleRatio] = useState(1);
 
   const navigate = useNavigate();
 
@@ -101,11 +104,15 @@ const Inspector = (props) => {
   // (highlighter rectangles/circles, gestures, etc.)
   const updateScaleRatio = (imgWidth) => {
     setScaleRatio(windowSize.width / imgWidth);
-    console.log('set scaleRatio:', scaleRatio);
+  };
+  const updateHeightScaleRatio = (imgHeight) => {
+    setHeightScaleRatio(windowSize.height / imgHeight);
   };
 
   const updateScaleRatioDebounced = debounce(updateScaleRatio, 500);
+  const updateHeightScaleRatioDebounced = debounce(updateHeightScaleRatio, 500);
 
+  // 实际是 宽 和 高，这里暂时不修改这个方法的名字
   const updateSourceTreeWidth = () => {
     // the idea here is to keep track of the screenshot image width. if it has
     // too much space to the right or bottom, adjust the max-width of the
@@ -136,8 +143,8 @@ const Inspector = (props) => {
     } else if (imgRect.width < screenshotRect.width) {
       screenshotBox.style.maxWidth = `${imgRect.width}px`;
     }
-
     updateScaleRatioDebounced(imgRect.width);
+    updateHeightScaleRatioDebounced(imgRect.height);
   };
 
   const updateSourceTreeWidthDebounced = debounce(updateSourceTreeWidth, 50);
@@ -224,7 +231,7 @@ const Inspector = (props) => {
             // console.log('done ... ');
             setTimeout(() => {
               loopRef.current();
-            }, 10);
+            }, 100);
           });
         } else {
           setTimeout(() => {
@@ -357,7 +364,7 @@ const Inspector = (props) => {
         {/*{!showScreenshot && (*/}
         {/*  <div className={InspectorStyles.screenshotBox}/>*/}
         {/*)}*/}
-        <Screenshot {...props} scaleRatio={scaleRatio}/>
+        <Screenshot {...props} scaleRatio={scaleRatio} heightScaleRatio={heightScaleRatio}/>
       </div>
       <div style={{flexGrow: 0.1, flexShrink: 0, flexBasis: '25px', minWidth : '25px'}}>
         <HeaderButtons quitCurrentSession={quitCurrentSession} {...props} />

@@ -17,6 +17,7 @@ const HighlighterRects = (props) => {
     containerEl,
     searchedForElementBounds,
     scaleRatio,
+    heightScaleRatio,
     showCentroids,
     isLocatorTestModalVisible,
     isSiriCommandModalVisible
@@ -76,17 +77,18 @@ const HighlighterRects = (props) => {
     const {x1, y1, x2, y2} = parseCoordinates(sourceJSON);
     const xOffset = highlighterXOffset || 0;
     const centerPoint = (v1, v2) => Math.round(v1 + (v2 - v1) / 2) / scaleRatio;
+    const centerPointY = (v1, v2) => Math.round(v1 + (v2 - v1) / 2) / heightScaleRatio;
     const obj = {
       type: CENTROID,
       element: sourceJSON,
       parent: prevElement,
       properties: {
         left: x1 / scaleRatio + xOffset,
-        top: y1 / scaleRatio,
+        top: y1 / heightScaleRatio,
         width: (x2 - x1) / scaleRatio,
-        height: (y2 - y1) / scaleRatio,
+        height: (y2 - y1) / heightScaleRatio,
         centerX: centerPoint(x1, x2) + xOffset,
-        centerY: centerPoint(y1, y2),
+        centerY: centerPointY(y1, y2),
         angleX: null,
         angleY: null,
         path: sourceJSON.path,
@@ -169,15 +171,15 @@ const HighlighterRects = (props) => {
 
   // Displays element rectangles only
   const renderElements = (elements) => {
-    let oriW = 0, oriH = 0;
-    for (const elem of elements) {
-      if (elem.properties.width > oriW) {
-        oriW = elem.properties.width;
-      }
-      if (elem.properties.height > oriH) {
-        oriH = elem.properties.height;
-      }
-    }
+    // let oriW = 0, oriH = 0;
+    // for (const elem of elements) {
+    //   if (elem.properties.width > oriW) {
+    //     oriW = elem.properties.width;
+    //   }
+    //   if (elem.properties.height > oriH) {
+    //     oriH = elem.properties.height;
+    //   }
+    // }
 
     for (const elem of elements) {
       // only render elements with non-zero height and width
@@ -186,18 +188,18 @@ const HighlighterRects = (props) => {
       }
 
       // 这里进行缩放.
-      if (window.__zcxWsScrcpy_canvasRect) {
-        let rect = window.__zcxWsScrcpy_canvasRect;
-        let w = rect.width, h = rect.height;
-        let wScale = 1.0 * w / oriW, hScale = 1.0 * h / oriH;
-        console.log("scale: wScale", wScale, "hScale", hScale, "scaleRatio", scaleRatio);
-        elem.properties.width *= wScale;
-        elem.properties.height *= hScale;
-        elem.properties.left *= wScale;
-        elem.properties.top *= hScale;
-        elem.properties.centerX *= wScale;
-        elem.properties.centerY *= hScale;
-      }
+      // if (window.__zcxWsScrcpy_canvasRect) {
+      //   let rect = window.__zcxWsScrcpy_canvasRect;
+      //   let w = rect.width, h = rect.height;
+      //   let wScale = 1.0 * w / oriW, hScale = 1.0 * h / oriH;
+      //   console.log("scale: wScale", wScale, "hScale", hScale, "scaleRatio", scaleRatio);
+      //   elem.properties.width *= wScale;
+      //   elem.properties.height *= hScale;
+      //   elem.properties.left *= wScale;
+      //   elem.properties.top *= hScale;
+      //   elem.properties.centerX *= wScale;
+      //   elem.properties.centerY *= hScale;
+      // }
 
       highlighterRects.push(
         <HighlighterRectForElem
@@ -229,7 +231,8 @@ const HighlighterRects = (props) => {
   const elements = getElements(sourceJSON);
 
   if (containerEl) {
-    screenshotEl = containerEl.querySelector('canvas');
+    // screenshotEl = containerEl.querySelector('canvas');
+    screenshotEl = containerEl.querySelector('#screenshotContainer canvas#__zcxWsScrcpy_touchCanvasId');
     highlighterXOffset =
       screenshotEl.getBoundingClientRect().left - containerEl.getBoundingClientRect().left;
   }
@@ -242,6 +245,7 @@ const HighlighterRects = (props) => {
         elSize={size}
         elLocation={location}
         scaleRatio={scaleRatio}
+        heightScaleRatio={heightScaleRatio}
         key={`el.${location.x}.${location.y}.${size.width}.${size.height}`}
         xOffset={highlighterXOffset}
       />
