@@ -59,9 +59,11 @@ const HighlighterRectForElem = (props) => {
   if (hoveredElement.path === element.path) {
     highlighterClasses.push(InspectorCSS['hovered-element-box']);
   }
-  if (selectedElement.path === element.path) {
-    highlighterClasses.push(InspectorCSS['inspected-element-box']);
-  }
+
+  //
+  // if (selectedElement.path === element.path) {
+  //   highlighterClasses.push(InspectorCSS['inspected-element-box']);
+  // }
 
   // if(isNotAllowedOn) {
   // console.log("methodCallInProgress,isSourceRefreshOn:", methodCallInProgress, isSourceRefreshOn);
