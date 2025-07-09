@@ -462,74 +462,74 @@ const Inspector = (props) => {
                   </div>
                 )
             },
-            {
-              label: t('Commands'),
-              key: INSPECTOR_TABS.COMMANDS,
-              disabled: !showScreenshot,
-              children: (
-                <Card
-                  title={
-                    <span>
-                      <ThunderboltOutlined/> {t('Execute Commands')}
-                    </span>
-                  }
-                  className={InspectorStyles['interaction-tab-card']}
-                >
-                  <Commands {...props} />
-                </Card>
-              )
-            },
-            {
-              label: t('Gestures'),
-              key: INSPECTOR_TABS.GESTURES,
-              disabled: !showScreenshot,
-              children: isGestureEditorVisible ? (
-                <Card
-                  title={
-                    <span>
-                      <HighlightOutlined/> {t('Gesture Builder')}
-                    </span>
-                  }
-                  className={InspectorStyles['interaction-tab-card']}
-                >
-                  <GestureEditor {...props} />
-                </Card>
-              ) : (
-                <Card
-                  title={
-                    <span>
-                      <HighlightOutlined/> {t('Saved Gestures')}
-                    </span>
-                  }
-                  className={InspectorStyles['interaction-tab-card']}
-                >
-                  <SavedGestures {...props} />
-                </Card>
-              )
-            },
-            {
-              label: t('Recorder'),
-              key: INSPECTOR_TABS.RECORDER,
-              disabled: !showScreenshot,
-              children: <Recorder {...props} />
-            },
-            {
-              label: t('Session Information'),
-              key: INSPECTOR_TABS.SESSION_INFO,
-              disabled: !showScreenshot,
-              children: (
-                <Card
-                  title={
-                    <span>
-                      <InfoCircleOutlined/> {t('Session Information')}
-                    </span>
-                  }
-                  className={InspectorStyles['interaction-tab-card']}
-                >
-                  <SessionInfo {...props} />
-                </Card>
-              )
-            }
+            // {
+            //   label: t('Commands'),
+            //   key: INSPECTOR_TABS.COMMANDS,
+            //   disabled: !showScreenshot,
+            //   children: (
+            //     <Card
+            //       title={
+            //         <span>
+            //           <ThunderboltOutlined/> {t('Execute Commands')}
+            //         </span>
+            //       }
+            //       className={InspectorStyles['interaction-tab-card']}
+            //     >
+            //       <Commands {...props} />
+            //     </Card>
+            //   )
+            // },
+            // {
+            //   label: t('Gestures'),
+            //   key: INSPECTOR_TABS.GESTURES,
+            //   disabled: !showScreenshot,
+            //   children: isGestureEditorVisible ? (
+            //     <Card
+            //       title={
+            //         <span>
+            //           <HighlightOutlined/> {t('Gesture Builder')}
+            //         </span>
+            //       }
+            //       className={InspectorStyles['interaction-tab-card']}
+            //     >
+            //       <GestureEditor {...props} />
+            //     </Card>
+            //   ) : (
+            //     <Card
+            //       title={
+            //         <span>
+            //           <HighlightOutlined/> {t('Saved Gestures')}
+            //         </span>
+            //       }
+            //       className={InspectorStyles['interaction-tab-card']}
+            //     >
+            //       <SavedGestures {...props} />
+            //     </Card>
+            //   )
+            // },
+            // {
+            //   label: t('Recorder'),
+            //   key: INSPECTOR_TABS.RECORDER,
+            //   disabled: !showScreenshot,
+            //   children: <Recorder {...props} />
+            // },
+            // {
+            //   label: t('Session Information'),
+            //   key: INSPECTOR_TABS.SESSION_INFO,
+            //   disabled: !showScreenshot,
+            //   children: (
+            //     <Card
+            //       title={
+            //         <span>
+            //           <InfoCircleOutlined/> {t('Session Information')}
+            //         </span>
+            //       }
+            //       className={InspectorStyles['interaction-tab-card']}
+            //     >
+            //       <SessionInfo {...props} />
+            //     </Card>
+            //   )
+            // }
           ]}
         />
       </div>
