@@ -219,7 +219,7 @@ const SelectedElement = (props) => {
             <Menu.Item key="3" onClick={() => handleAssertVisibility()}>
               生成可见性断言
             </Menu.Item>
-            <Menu.Item key="3" onClick={() => handleAssertExist()}>
+            <Menu.Item key="4" onClick={() => handleAssertExist()}>
               生成存在性断言
             </Menu.Item>
 
