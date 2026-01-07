@@ -13044,6 +13044,7 @@ var StreamClientScrcpy = (function (_super) {
         streamReceiver.on('disconnected', this.onDisconnected);
         console.log(TAG, player.getName(), udid);
         window.__zcxWsScrcpy_video = video;
+        window.__zcxStreamClientScrcpy = this;
     };
     StreamClientScrcpy.prototype.sendMessage = function (message) {
         this.streamReceiver.sendEvent(message);
@@ -13065,6 +13066,38 @@ var StreamClientScrcpy = (function (_super) {
     StreamClientScrcpy.prototype.sendNewVideoSetting = function (videoSettings) {
         this.requestedVideoSettings = videoSettings;
         this.sendMessage(CommandControlMessage_1.CommandControlMessage.createSetVideoSettingsCommand(videoSettings));
+    };
+    StreamClientScrcpy.prototype.currentVideoSettings = function () {
+        if (this.player) {
+            return this.player.getVideoSettings();
+        }
+        else {
+            throw Error("player is closed");
+        }
+    };
+    StreamClientScrcpy.prototype.sendNewVideoSetting2 = function (videoSettings) {
+        var bounds = videoSettings.bounds;
+        var bitrate = videoSettings.bitrate;
+        var maxFps = videoSettings.maxFps;
+        var iFrameInterval = videoSettings.iFrameInterval;
+        var lockedVideoOrientation = videoSettings.lockedVideoOrientation;
+        var sendFrameMeta = videoSettings.sendFrameMeta;
+        var displayId = videoSettings.displayId;
+        var codecOptions = videoSettings.codecOptions;
+        var encoderName = videoSettings.encoderName;
+        var videoSettingsNew = new VideoSettings_1.default({
+            bounds: bounds,
+            bitrate: bitrate,
+            maxFps: maxFps,
+            iFrameInterval: iFrameInterval,
+            lockedVideoOrientation: lockedVideoOrientation,
+            sendFrameMeta: sendFrameMeta,
+            displayId: displayId,
+            codecOptions: codecOptions,
+            encoderName: encoderName,
+        });
+        this.requestedVideoSettings = videoSettingsNew;
+        this.sendMessage(CommandControlMessage_1.CommandControlMessage.createSetVideoSettingsCommand(videoSettingsNew));
     };
     StreamClientScrcpy.prototype.getClientId = function () {
         return this.clientId;
@@ -14217,8 +14250,9 @@ var FeaturedInteractionHandler = (function (_super) {
             var fakeEvent = false;
             var disableFakeEvent = window.__zcxWsScrcpy_disableFakeEvent;
             if (disableFakeEvent == undefined || !disableFakeEvent) {
-                if (event.target !== this.tag && this.tag.tagName === 'CANVAS' && window.__zcxWsScrcpy_canvasRect) {
-                    var canvasRect = window.__zcxWsScrcpy_canvasRect;
+                var canvas = document.getElementById("__zcxWsScrcpy_touchCanvasId");
+                if (event.target !== this.tag && this.tag.tagName === 'CANVAS' && canvas) {
+                    var canvasRect = canvas.getBoundingClientRect();
                     if (event.clientX >= canvasRect.left && event.clientY >= canvasRect.top
                         && event.clientX <= canvasRect.right && event.clientY <= canvasRect.bottom) {
                         fakeEvent = true;
@@ -15955,7 +15989,7 @@ var MsePlayer = (function (_super) {
         bitrate: 14680064,
         maxFps: 60,
         iFrameInterval: 10,
-        bounds: new Size_1.default(360, 780),
+        bounds: new Size_1.default(780, 780),
         sendFrameMeta: false,
     });
     MsePlayer.DEFAULT_FRAMES_PER_FRAGMENT = 1;

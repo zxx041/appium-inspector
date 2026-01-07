@@ -218,15 +218,10 @@ const Screenshot = (props) => {
 
   // ScreenControl 渲染完成后 这里将执行
   const handleScreenControlRendered = () => {
-    // 2s 后执行，否则 取不到正确的值
-    setTimeout(()=>{
-      const img = containerEl.current.querySelector('#screenshotContainer canvas#__zcxWsScrcpy_touchCanvasId');
-          if (img) {
-            const imgRect = img.getBoundingClientRect();
-            console.log("imgRect:", imgRect.width, imgRect.height);
-            setScreenshotStyle({ width: imgRect.width, height: imgRect.height });
-          }
-    }, 2000);
+    if (window.__zcxWsScrcpy_video) {
+      const imgRect = containerEl.current.querySelector('#screenshotContainer canvas#__zcxWsScrcpy_touchCanvasId');
+      setScreenshotStyle({ width: imgRect.width, height: imgRect.height });
+    }
   };
 
   if (screenshotInteractionMode === TAP_SWIPE || selectedTick) {
@@ -241,21 +236,21 @@ const Screenshot = (props) => {
   // Show loading indicator if a method call is in progress, unless using MJPEG mode.
   return (
     <div>
-      <div className={styles.innerScreenshotContainer}>
+      <div className={styles.innerScreenshotContainer} style={screenshotStyle}>
         <div
           ref={containerEl}
           style={screenshotStyle}
           className={styles.screenshotBox}
         >
-          {screenshotInteractionMode !== SELECT && (
+          {/*{screenshotInteractionMode !== SELECT && (
             <div className={styles.coordinatesContainer}>
               <p>{t('xCoordinate', {x})}</p>
               <p>{t('yCoordinate', {y})}</p>
             </div>
-          )}
+          )}*/}
           {/*{screenImg}*/}
           {<ScreenControl {...props} containerEl={containerEl.current} onRender={handleScreenControlRendered}/>}
-          {selectedInspectorTab === INSPECTOR_TABS.GESTURES && points && (
+          {/*{selectedInspectorTab === INSPECTOR_TABS.GESTURES && points && (
             <svg key="gestureSVG" className={styles.gestureSvg}>
               {points.map((pointer) =>
                 pointer.map((tick, index) => (
@@ -286,7 +281,7 @@ const Screenshot = (props) => {
                 )),
               )}
             </svg>
-          )}
+          )}*/}
         </div>
       </div>
       <Modal

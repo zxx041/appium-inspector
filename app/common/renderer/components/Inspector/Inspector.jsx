@@ -131,19 +131,23 @@ const Inspector = (props) => {
     }
 
     const imgRect = img.getBoundingClientRect();
-    const screenshotRect = screenshotBox.getBoundingClientRect();
 
-    if (imgRect.height < screenshotRect.height) {
-      // get the expected image width if the image would fill the screenshot box height
-      const attemptedImgWidth = (screenshotRect.height / imgRect.height) * imgRect.width;
-      // get the maximum image width as a fraction of the current window width
-      const maxImgWidth = window.innerWidth * WINDOW_DIMENSIONS.MAX_IMAGE_WIDTH_FRACTION;
-      const curMaxImgWidth = Math.min(maxImgWidth, attemptedImgWidth);
-      screenshotBox.style.maxWidth = `${curMaxImgWidth}px`;
-    } else if (imgRect.width < screenshotRect.width) {
-      screenshotBox.style.maxWidth = `${imgRect.width}px`;
-    }
+    //  这段 不注释的话，会导致 页面变形
+    // const screenshotRect = screenshotBox.getBoundingClientRect();
+    //
+    // if (imgRect.height < screenshotRect.height) {
+    //   // get the expected image width if the image would fill the screenshot box height
+    //   const attemptedImgWidth = (screenshotRect.height / imgRect.height) * imgRect.width;
+    //   // get the maximum image width as a fraction of the current window width
+    //   const maxImgWidth = window.innerWidth * WINDOW_DIMENSIONS.MAX_IMAGE_WIDTH_FRACTION;
+    //   const curMaxImgWidth = Math.min(maxImgWidth, attemptedImgWidth);
+    //   screenshotBox.style.maxWidth = `${curMaxImgWidth}px`;
+    // } else if (imgRect.width < screenshotRect.width) {
+    //   screenshotBox.style.maxWidth = `${imgRect.width}px`;
+    // }
+
     updateScaleRatioDebounced(imgRect.width);
+    // 这个用于计算高度的缩放比
     updateHeightScaleRatioDebounced(imgRect.height);
   };
 
@@ -211,9 +215,14 @@ const Inspector = (props) => {
 
   let doUpdateRect = undefined;
 
-  const loopRef = useRef(null); // 用于存储循环任务的引用
+  // 用于存储循环任务的引用
+  const loopRef = useRef(null);
+  // 保存定时器ID
+  // 递归 setTimeout 未管理定时器 ID，导致定时器叠加。导致频繁调用
+  const timerRef = useRef(null);
 
-  const latestRecordFlag = useRef(recordFlag); // 存储最新的 props 值
+  // 存储最新的 是否录制 开关
+  const latestRecordFlag = useRef(recordFlag);
 
   // 每次 someProp 变化时更新 ref
   useEffect(() => {
@@ -229,26 +238,32 @@ const Inspector = (props) => {
           // console.log('try to call...');
           applyClientMethodWithCallback({methodName: 'getPageSource',  skipScreenshot: true}, function() {
             // console.log('done ... ');
-            setTimeout(() => {
+            timerRef.current = setTimeout(() => {
               loopRef.current();
             }, 100);
           });
         } else {
-          setTimeout(() => {
+          console.log("每2秒获取一次源码");
+          // 比如 屏幕旋转 场景 就需要这个
+          applyClientMethodWithCallback({methodName: 'getPageSource',  skipScreenshot: true});
+          timerRef.current = setTimeout(() => {
             loopRef.current();
-          }, 1000); // 1秒后再通知完成.
+          }, 2000); // 2秒后再通知完成.
         }
       };
 
-      setTimeout(() => {
+      timerRef.current = setTimeout(() => {
         loopRef.current();
       });
     }
 
     // 组件卸载时清除任务
-    return () => { // Todo 停止任务标志
-      if (loopRef.current) {
-        loopRef.current = null;
+    return () => {
+      loopRef.current = null;
+
+      if (timerRef.current) {
+        clearTimeout(timerRef.current); // 清理待执行的定时器
+        timerRef.current = null;
       }
     };
   }, []); // 空依赖数组 [] 确保只运行一次
@@ -353,6 +368,7 @@ const Inspector = (props) => {
       className={InspectorStyles['inspector-main']}
       ref={(el) => (screenAndSourceEl.current = el)}
     >
+{/*左边：快照容器 */}
       <div
         id="screenshotContainer"
         className={InspectorStyles['screenshot-container']}
@@ -366,9 +382,13 @@ const Inspector = (props) => {
         {/*)}*/}
         <Screenshot {...props} scaleRatio={scaleRatio} heightScaleRatio={heightScaleRatio}/>
       </div>
-      <div style={{flexGrow: 0.1, flexShrink: 0, flexBasis: '25px', minWidth : '25px'}}>
+{/*中间：竖排的操控按钮*/}
+{/* 不增加，不收缩，固定38px */}
+      <div style={{flexGrow: 0, flexShrink: 0, flexBasis: '38px'}}>
+      {/*<div className={InspectorStyles['interaction-tab-container']}>*/}
         <HeaderButtons quitCurrentSession={quitCurrentSession} {...props} />
       </div>
+{/*右侧：源码树和节点信息*/}
       <div id="sourceTreeContainer" className={InspectorStyles['interaction-tab-container']}>
         <Tabs
           activeKey={selectedInspectorTab}

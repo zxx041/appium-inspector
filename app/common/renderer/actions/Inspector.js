@@ -205,7 +205,7 @@ const checkErrorsInAction = ({ticks}) => {
 export function selectElement(path, fromWhere, position) {
   return async (dispatch, getState) => {
     dispatch({type: SET_ENTRY_TO_SELECT_EL, fromWhere});
-    const {sourceJSON, sourceXML, expandedPaths, currentContext, 
+    const {sourceJSON, sourceXML, expandedPaths, currentContext,
       automationName, isSourceRefreshOn, methodCallInProgress, mjpegScreenshotUrl,
       recordFlag} =
       getState().inspector;
@@ -235,7 +235,7 @@ export function selectElement(path, fromWhere, position) {
     dispatch({type: SET_OPTIMAL_LOCATORS, strategyMap});
 
     // fetch xpath and send click event to parent
-    // 点击了屏幕 且 开启了录制 
+    // 点击了屏幕 且 开启了录制
     if (fromWhere === ENTRY_TO_SELECT_EL.FROM_LEFT_SCREEN && recordFlag) {
       let selectedElementTemp = {
         ...selectedElement,
@@ -852,9 +852,10 @@ export function toggleShowCentroids() {
   };
 }
 
+// 开启录制
 export function toggleRecordFlag() {
 
-  // 不禁用控制
+  // 穿透canvas，从而可以在 ws-scrcpy的投屏 上 触发各种事件
   window.__zcxWsScrcpy_disableFakeEvent = false;
 
   return (dispatch, getState) => {
@@ -869,9 +870,9 @@ export function toggleRecordFlag() {
 
 // 开启元素定位
 export function toggleOpenPositionFlag() {
-  // 禁用控制
+  // 不穿透canvas，从而不会在 ws-scrcpy的投屏 上 触发各种事件
   window.__zcxWsScrcpy_disableFakeEvent = true;
-  
+
   return (dispatch, getState) => {
     dispatch({type: SET_RECORD_FLAG, flag: false});
     dispatch({type: SET_OPEN_POSITION_FLAG, flag: true});

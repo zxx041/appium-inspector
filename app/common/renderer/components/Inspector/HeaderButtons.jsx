@@ -62,11 +62,11 @@ const HeaderButtons = (props) => {
     let intervalId
     if(recordFlag){
         intervalId = setInterval(() => {
-        setCount(prevCount => prevCount + 1); 
+        setCount(prevCount => prevCount + 1);
         // 使用函数式更新防止闭包问题
-      }, 500); // 
+      }, 500); //
     } else {
-      return () => clearInterval(intervalId); 
+      return () => clearInterval(intervalId);
     }
   },[recordFlag]);
 
@@ -221,6 +221,7 @@ const HeaderButtons = (props) => {
           />
         </Tooltip>
       )}
+{/* 刷新页面 */}
       <Tooltip title={t('refreshSource')} placement="right">
         <Button
           id="btnReload"
@@ -228,9 +229,11 @@ const HeaderButtons = (props) => {
           onClick={() => applyClientMethod({methodName: 'getPageSource'})}
         />
       </Tooltip>
+{/* 查找元素，必须先打开文档树 */}
       <Tooltip title={t('Search for element')} placement="right">
         <Button id="searchForElement" icon={<SearchOutlined />} onClick={showLocatorTestModal} />
       </Tooltip>
+{/* 录制 */}
       {!recordFlag && (
         <Tooltip title={t('Start Recording')} placement="right">
           <Button id="btnStartRecording" icon={<VideoCameraOutlined />} onClick={toggleRecordFlag} />
@@ -247,6 +250,7 @@ const HeaderButtons = (props) => {
           />
         </Tooltip>
       )}
+{/* 定位元素，不会触发事件 */}
         <Tooltip title={t('Position Element')} placement="right">
           <Button
             id="btnPosition"
@@ -254,6 +258,27 @@ const HeaderButtons = (props) => {
             onClick={toggleOpenPositionFlag}
           />
         </Tooltip>
+{/* 查看文档树 */}
+      {!sourceTreeOpenFlag
+        && (
+          <Tooltip title={t('Look App Source')} placement="right">
+            <Button
+              id="btnOpenSourceTree"
+              icon={<EyeOutlined />}
+              onClick={setSourceTreeOpenFlag}
+            />
+          </Tooltip>
+        )}
+      {sourceTreeOpenFlag
+        && (
+          <Tooltip title={t('NotLook App Source')} placement="right">
+            <Button
+              id="btnOpenSourceTree"
+              icon={<EyeInvisibleOutlined />}
+              onClick={setSourceTreeOpenFlag}
+            />
+          </Tooltip>
+        )}
     </Button.Group>
   );
 
@@ -267,7 +292,7 @@ const HeaderButtons = (props) => {
     // className={InspectorStyles['inspector-toolbar']}
     <div style={{height: '100%', display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'space-between', 
+                justifyContent: 'space-between',
                 paddingLeft: '1em'}}>
       {/* <Space size="middle"> */}
         <div>
@@ -277,7 +302,7 @@ const HeaderButtons = (props) => {
           {/* {quitSessionButton} */ /* 注释掉退出会话 */}
         </div>
 
-        <div>
+        {/*<div>
           <Button.Group>
             {!sourceTreeOpenFlag
             && (
@@ -300,7 +325,7 @@ const HeaderButtons = (props) => {
             </Tooltip>
             )}
           </Button.Group>
-        </div>
+        </div>*/}
 
       {/* </Space> */}
     </div>

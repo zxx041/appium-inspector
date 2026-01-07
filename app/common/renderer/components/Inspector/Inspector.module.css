@@ -37,11 +37,13 @@
 }
 
 .inspector-main .screenshot-container {
-  max-width: 500px;
+  max-width: 780px;
   max-height: calc(100% - 0px);
-  flex-grow: 1;
+  /* 这个比较关键，去掉后，整个布局就正常了 */
+  flex-grow: 0;
   flex-shrink: 2;
-  flex-basis: 400px;
+  /* 因为ws-scrcpy的最大宽度设置成 780px 以适配 pad，这里改成350，是为了能兼容手机的场景 */
+  flex-basis: 350px;
 }
 
 .screenshot-container .screenshot-controls {
@@ -76,7 +78,7 @@
 .inspector-main .interaction-tab-container {
   position: relative;
   flex-grow: 1;
-  flex-basis: 550px;
+  flex-basis: 400px;
   min-width: 380px;
   padding-left: 1em;
   display: flex;

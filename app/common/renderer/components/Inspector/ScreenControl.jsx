@@ -24,8 +24,13 @@ const ScreenControl = (props) => {
 
   const containerRef = useRef(null);
 
-  let touchCanvas = null;
+  // 这个是为了监听 canvasElement
+  const resizeObserverRef = useRef(null);
+
+  // let touchCanvas = null;
   useEffect(() => {
+
+    let canvasElement = null;
 
     const doIt = async () => {
       if (containerRef.current && !containerRef.current.contains(window.__zcxWsScrcpy_video)) {
@@ -39,30 +44,83 @@ const ScreenControl = (props) => {
           host = sessionDetails.host;
         }
         if(!port) {
-          port = 8000;
+          port = 29418;
         }
         console.log("scrcpyHost:", host, ",scrcpyPort:", port);
         // await window.__zcxWsScrcpy_init(`action=stream&udid=${udid}&player=mse&ws=ws%3A%2F%2Flocalhost%3A8000%2F%3Faction%3Dproxy-adb%26remote%3Dtcp%253A8886%26udid%3D${udid}`);
         await window.__zcxWsScrcpy_init(`action=stream&udid=${udid}&player=mse&ws=ws%3A%2F%2F${host}%3A${port}%2F%3Faction%3Dproxy-adb%26remote%3Dtcp%253A8886%26udid%3D${udid}`);
         // await window.__zcxWsScrcpy_init(`action=stream&udid=${udid}&player=mse&ws=ws%3A%2F%2F127.0.0.1%3A8001%2F%3Faction%3Dproxy-adb%26remote%3Dtcp%253A8886%26udid%3D${udid}%26backend=127.0.0.1`);
-
+        // 将 window.__zcxWsScrcpy_video 这个全局对象 挂载给当前的 containerRef，并渲染
         containerRef.current.appendChild(window.__zcxWsScrcpy_video);
 
+        // 这段是为了后面实现 事件穿透 用的
         setTimeout(() => {
-          let canvasRect = window.__zcxWsScrcpy_video.getBoundingClientRect();
-          window.__zcxWsScrcpy_canvasRect = canvasRect;
-          console.log("animation ....");
-        }, 1500);
+          // 这个变量可以废掉 __zcxWsScrcpy_canvasRect
+          // let canvasRect = window.__zcxWsScrcpy_video.getBoundingClientRect();
+          // window.__zcxWsScrcpy_canvasRect = canvasRect;
+          // console.log("canvasRect:x:", canvasRect.width, ",y:", canvasRect.height);
 
-        touchCanvas = document.getElementById('__zcxWsScrcpy_touchCanvasId');
+          // 1. 校验视频元素是否存在
+          canvasElement = containerRef.current.querySelector('#screenshotContainer canvas#__zcxWsScrcpy_touchCanvasId');
+          if (!canvasElement) {
+            console.log('ws-scrcpy 视频元素不存在');
+            // setLoading(false);
+            return;
+          }
+
+          // 2. 初始化 ResizeObserver，监听宽高变化
+          resizeObserverRef.current = new ResizeObserver((entries) => {
+            for (const entry of entries) {
+              // 获取元素实际渲染的宽高（contentBox 是内容区域尺寸）
+              const { width, height } = entry.contentRect;
+              if (width && height) {
+                // // 每次发现长宽变化，这一行也执行下
+                // window.__zcxWsScrcpy_canvasRect = window.__zcxWsScrcpy_video.getBoundingClientRect();
+                //
+                console.log("device maybe rotate, width:", width, ",height:", height);
+                // 调用父组件方法
+                onRender?.();
+              }
+            }
+          });
+
+          // 3. 开始监听视频元素
+          resizeObserverRef.current.observe(canvasElement);
+
+          // 4. 初始获取一次宽高（避免监听触发前无数据）
+          const initWidth = canvasElement.offsetWidth;
+          const initHeight = canvasElement.offsetHeight;
+          if (initWidth && initHeight) {
+            console.log("initWidth:", initWidth, ",initHeight:", initHeight);
+            // 调用父组件方法
+            onRender?.();
+            // setVideoSize({
+            //   width: initWidth,
+            //   height: initHeight,
+            //   ratio: (initWidth / initHeight).toFixed(2)
+            // });
+            // setLoading(false);
+          }
+
+        }, 1500);
 
       }
     };
-    
+
     doIt().then(()=>{
-      onRender?.(); // 通知父组件已渲染
+      // 调用父组件方法
+      onRender?.();
     });
-    
+
+    // 5. 组件卸载/依赖变化时：销毁监听（关键！避免内存泄漏）
+    return () => {
+      if (resizeObserverRef.current) {
+        resizeObserverRef.current.unobserve(canvasElement);
+        resizeObserverRef.current.disconnect();
+        resizeObserverRef.current = null;
+      }
+    };
+
   }, []);
 
   // let generateEvent = (e, type) => {
